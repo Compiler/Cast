@@ -11,7 +11,7 @@ GLAD_INC = $(GLAD)/include
 CLIENT_DRIVER = Cast/src/main.cpp
 
 CPP = g++
-CPP_FLAGS = -std=c++17
+CPP_FLAGS = -std=c++20
 
 INCLUDES = -I $(GLAD_INC) -I $(CAST_LIB) -I $(GLFW_INC)
 LIBRARIES = -L$(GLFW_LIB) -lglfw3 -lgdi32 -luser32 -lkernel32 -lopengl32
@@ -19,8 +19,17 @@ LIBRARIES = -L$(GLFW_LIB) -lglfw3 -lgdi32 -luser32 -lkernel32 -lopengl32
 BIN = bin
 OUT = programBinary
 
-main:
-	$(CPP) $(CPP_FLAGS) $(INCLUDES) -c $(GLAD_INC)/glad/glad.c -o $(BIN)/glad.o
-	$(CPP) $(CPP_FLAGS) $(INCLUDES) -c $(CLIENT_DRIVER) -o $(BIN)/$(OUT).o
-	$(CPP) $(CPP_FLAGS) $(BIN)/$(OUT).o $(BIN)/glad.o $(LIBRARIES) -o $(BIN)/$(OUT)
+GLAD_OBJ = $(BIN)/glad.o
+CLIENT_OBJ = $(BIN)/$(OUT).o
+
+.PHONY: main
+
+main: $(GLAD_OBJ) $(CLIENT_OBJ)
+	$(CPP) $(CPP_FLAGS) $(GLAD_OBJ) $(CLIENT_OBJ) $(LIBRARIES) -o $(BIN)/$(OUT)
 	./$(BIN)/$(OUT)
+
+$(GLAD_OBJ): $(GLAD_INC)/glad/glad.c
+	$(CPP) $(CPP_FLAGS) $(INCLUDES) -c $< -o $@
+
+$(CLIENT_OBJ): $(CLIENT_DRIVER)
+	$(CPP) $(CPP_FLAGS) $(INCLUDES) -c $< -o $@
