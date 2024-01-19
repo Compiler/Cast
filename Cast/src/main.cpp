@@ -33,7 +33,7 @@ int main(void){
     while(!glfwWindowShouldClose(window)){
         glfwSwapBuffers(window);
         glfwPollEvents();    
-        glClearColor((float)std::rand()/RAND_MAX, (float)std::rand()/RAND_MAX, (float)std::rand()/RAND_MAX, 1.0f);
+        glClearColor(0.2, 0.2, 0.2, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
     }
 
