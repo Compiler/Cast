@@ -1,4 +1,6 @@
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
+#include <glad/glad.h>
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -27,6 +29,11 @@ int main() {
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
+        // Load OpenGL function pointers using GLAD
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cerr << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Main loop
