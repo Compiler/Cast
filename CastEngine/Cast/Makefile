@@ -1,0 +1,4 @@
+
+
+main: 
+	bear -- make -C ../
