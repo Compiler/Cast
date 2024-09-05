@@ -14,7 +14,7 @@ OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o
 
 $(BIN_DIR)/$(EXE_NAME): $(OBJECTS) main.cpp run
 
-%.o: %.cpp
+%.o: %.cpp %.h
 	@echo "Recompiling object files in Cast " $@ " " $^
 	$(CC) $(CFLAGS) -c -o $@ $^
 
