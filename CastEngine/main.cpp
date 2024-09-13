@@ -64,7 +64,7 @@ int main() {
     Core().init();
 
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Cast", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(1920, 1080, "Cast", NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -78,16 +78,9 @@ int main() {
     }
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    
 
-
-
-
-    glViewport(0, 0, 1920, 1080);
     float targetFPS = 10;
     auto rand = [](){return std::rand() % 255 / 255.0f;};
-
-
 
 
 
@@ -98,17 +91,32 @@ int main() {
 
 
 
+    // x,y correspond to center of triangle
+    float x = 0;
+    float y = 0;
+    float base = 1;
+    float height = 1;
+
     float vertices[] = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+        x, y + height / 1/2.0f, 0.0f,
+        x + base * 1/2.0f, y - height * 1/2.0f, 0.0f,
+        x - base * 1/2.0f, y - height * 1/2.0f, 0.0f,
     };
+
+    std::cout << "Triangle vertices: \n";
+    for(int i = 0; i < 3; i++) std::cout << "( " << vertices[i * 3] << ", " << vertices[i*3 + 1] << " ) " << std::endl;
+
+    unsigned int vao; glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
 
     unsigned int vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(decltype(vertices[0])), (void*)0);
+    glEnableVertexAttribArray(0);
+
 
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
@@ -156,7 +164,10 @@ int main() {
     }else std::cout << "Shader::Program compiled successfully\n";
 
 
-    glUseProgram(shaderProgram);
+
+
+
+
 
     while (!glfwWindowShouldClose(window)) {
         auto now = std::chrono::high_resolution_clock::now();
@@ -169,6 +180,9 @@ int main() {
         glClearColor(rand(), rand(), rand(), 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glUseProgram(shaderProgram);
+        glBindVertexArray(vao);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         // Check and proc events, swap render buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
