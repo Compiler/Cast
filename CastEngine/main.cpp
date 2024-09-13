@@ -57,12 +57,11 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_MINOR_VERSION);
 
-#ifdef CAST_MAC_OS
+#ifdef CAST_MAC_OS 
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
     Core().init();
-
 
     GLFWwindow* window = glfwCreateWindow(1920, 1080, "Cast", NULL, NULL);
     if (!window) {
@@ -79,8 +78,8 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
-    float targetFPS = 10;
-    auto rand = [](){return std::rand() % 255 / 255.0f;};
+    float targetFPS = 25;
+    auto rand = [](){return 0.3;};//return std::rand() % 255 / 255.0f;};
 
 
 
@@ -168,7 +167,6 @@ int main() {
 
 
 
-
     while (!glfwWindowShouldClose(window)) {
         auto now = std::chrono::high_resolution_clock::now();
 
@@ -191,10 +189,10 @@ int main() {
 
         auto delta = std::chrono::high_resolution_clock::now() - now;
         float frameTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() ;
-            //22ms = 0.022
         float fps = 1000.0f / frameTimeMs;
         std::cout << "FPS: " << fps << "\n Frame time: " << frameTimeMs << std::endl;
-        if(fps > 100) std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / targetFPS - frameTimeMs)));
+
+        std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / targetFPS - frameTimeMs)));
     }
 
     glfwTerminate();
