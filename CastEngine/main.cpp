@@ -1,7 +1,9 @@
+#include <chrono>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <iostream>
+#include <thread>
 #include <Cast/Core.h>
 
 #ifdef CAST_MAC_OS
@@ -58,14 +60,25 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glViewport(0, 0, 1920, 1080);
+    float targetFPS = 10;
     while (!glfwWindowShouldClose(window)) {
+        auto now = std::chrono::high_resolution_clock::now();
         processInput(window);
 
         glClear(GL_COLOR_BUFFER_BIT);
 
+        auto rand = [](){return std::rand() % 255 / 255.0f;};
+        glClearColor(rand(), rand(), rand(), 1);
+
         glfwSwapBuffers(window);
 
         glfwPollEvents();
+        auto delta = std::chrono::high_resolution_clock::now() - now;
+        float frameTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() ;
+            //22ms = 0.022
+        float fps = 1000.0f / frameTimeMs;
+        std::cout << "FPS: " << fps << "\n Frame time: " << frameTimeMs << std::endl;
+        if(fps > 100) std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / targetFPS - frameTimeMs)));
     }
 
     glfwTerminate();
