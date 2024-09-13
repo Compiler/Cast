@@ -12,9 +12,10 @@ BIN_DIR=bin
 
 OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o
 
-$(BIN_DIR)/$(EXE_NAME): $(OBJECTS) main.cpp run
+main: $(OBJECTS) $(BIN_DIR)/$(EXE_NAME)
+	./$(BIN_DIR)/$(EXE_NAME)
 
-%.o: %.cpp %.h
+%.o: %.cpp
 	@echo "Recompiling object files in Cast " $@ " " $^
 	$(CC) $(CFLAGS) -c -o $@ $^
 
@@ -22,7 +23,7 @@ $(BIN_DIR)/glad.o:
 	@echo "Recompiling glad " $@ " " $^
 	$(CC) $(CFLAGS) -c $(GLAD_ROOT)/src/glad.c -o $(BIN_DIR)/glad.o
 
-main.cpp:
+$(BIN_DIR)/$(EXE_NAME): $(OBJECTS) main.cpp
 	@echo "Recompiling main binary " $@ ": " $^
 	$(CC) $(CFLAGS) -o $(BIN_DIR)/$(EXE_NAME) $^ $(LIBRARIES)
 
