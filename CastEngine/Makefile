@@ -25,10 +25,11 @@ $(BIN_DIR)/glad.o:
 
 $(BIN_DIR)/$(EXE_NAME): $(OBJECTS) main.cpp
 	@echo "Recompiling main binary " $@ ": " $^
-	$(CC) $(CFLAGS) -o $(BIN_DIR)/$(EXE_NAME) $^ $(LIBRARIES)
+	$(CC) $(CFLAGS) -g $(OBJECTS) -o $(BIN_DIR)/$(EXE_NAME) main.cpp $(LIBRARIES)
 
 run:
 	./$(BIN_DIR)/$(EXE_NAME)
 
 clean:
 	rm -rf $(BIN_DIR)/* *.o
+	rm Cast/*.o
