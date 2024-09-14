@@ -20,22 +20,21 @@
 #endif
 #endif
 
-const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
 
-const char *fragmentShaderSource = "#version 410 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\0";
+#include <fstream>
+#include <sstream>
+#include <string>
 
-
-
+std::string readFile(std::string filePath){
+    std::ifstream file(filePath);
+    if(!file){
+        std::cerr << "Failed to load file " << filePath << std::endl;
+        return "";
+    }
+    std::ostringstream ss;
+    ss << file.rdbuf();
+    return ss.str();
+}
 
 void framebuffer_size_callback(GLFWwindow* , int width, int height) {
     glViewport(0, 0, width, height);
@@ -92,7 +91,6 @@ int main() {
 
 
 
-
     //space for visual splitting, will move these to own functions / class soon
 
 
@@ -139,7 +137,9 @@ int main() {
 
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    std::string vertexShaderCode = readFile("Resources/passthrough.vert");
+    const char* sourceCStr = vertexShaderCode.c_str();
+    glShaderSource(vertexShader, 1, &sourceCStr, NULL);
     glCompileShader(vertexShader);
 
     // Check for success
@@ -154,7 +154,9 @@ int main() {
 
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    std::string fragmentShaderCode = readFile("Resources/passthrough.frag");
+    const char* fragSourceCStr = fragmentShaderCode.c_str();
+    glShaderSource(fragmentShader, 1, &fragSourceCStr, NULL);
     glCompileShader(fragmentShader);
 
     // Check for success
