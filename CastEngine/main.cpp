@@ -5,6 +5,7 @@
 #include <iostream>
 #include <thread>
 #include <Cast/Core.h>
+#include <stb_image/stb_image.h>
 
 #ifdef CAST_MAC_OS
 #define OPENGL_MINOR_VERSION 1

@@ -1,5 +1,5 @@
 CC= g++
-INCLUDE=-I include/ -I . -I Cast/
+INCLUDE=-I include/ -I . -I Cast/ -I include/stb_image/
 
 # Linux compilation 
 LIBRARIES =-L lib/ -lglfw -lGL
