@@ -1,8 +1,8 @@
 CC= g++
-INCLUDE=-I include/ -I . -I Cast/ -I include/stb_image/
+INCLUDE=-I include/ -I . -I Cast/ -I include/stb_image/ 
 
 # Linux compilation 
-LIBRARIES =-L lib/ -lglfw -lGL
+LIBRARIES =-L lib/ -lglfw -lGL -lbox2d
 CFLAGS =-Wall -Wextra -g $(INCLUDE) 
 
 EXE_NAME=CastEngine

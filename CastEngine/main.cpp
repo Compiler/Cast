@@ -1,3 +1,5 @@
+#include <vector>
+#include <math.h>
 #include <chrono>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -6,6 +8,7 @@
 #include <thread>
 #include <Cast/Core.h>
 #include <stb_image/stb_image.h>
+#include <box2d/box2d.h>
 
 #ifdef CAST_MAC_OS
 #define OPENGL_MINOR_VERSION 1
@@ -48,8 +51,13 @@ void processInput(GLFWwindow* window) {
 void glfwErrorCallback(int error, const char* description) {
     std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
 }
+void initBox2D(){
+    b2BodyDef bodyDef = b2DefaultBodyDef();
+    bodyDef.position = (b2Vec2){10.0f, 5.0f};
+}
 
 int main() {
+    initBox2D();
     glfwSetErrorCallback(glfwErrorCallback);
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -98,13 +106,19 @@ int main() {
     float height = 1;
 
     float vertices[] = {
-        x, y + height / 1/2.0f, 0.0f,
-        x + base * 1/2.0f, y - height * 1/2.0f, 0.0f,
-        x - base * 1/2.0f, y - height * 1/2.0f, 0.0f,
+        // first triangle
+        0.5f,  0.5f, 0.0f,  // top right
+        0.5f, -0.5f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top le
+    };
+    unsigned int indices[] = {  
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
     };
 
     std::cout << "Triangle vertices: \n";
-    for(int i = 0; i < 3; i++) std::cout << "( " << vertices[i * 3] << ", " << vertices[i*3 + 1] << " ) " << std::endl;
+    for(int i = 0; i < 6; i++) std::cout << "( " << vertices[i * 3] << ", " << vertices[i*3 + 1] << " ) " << std::endl;
 
     unsigned int vao; glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -113,6 +127,11 @@ int main() {
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    unsigned int ebo;
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(decltype(vertices[0])), (void*)0);
     glEnableVertexAttribArray(0);
@@ -130,6 +149,7 @@ int main() {
     if(!success){
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
         std::cerr << "ShaderError::Vertex::CompilationFailed\t" << infoLog << std::endl;
+
     }else std::cout << "Shader::Vertex compiled successfully\n";
 
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
@@ -168,6 +188,11 @@ int main() {
 
 
 
+    int frequency = 25;
+    float frameLengths;
+    float fpss;
+    
+    int count = 1;
     while (!glfwWindowShouldClose(window)) {
         auto now = std::chrono::high_resolution_clock::now();
 
@@ -181,7 +206,8 @@ int main() {
 
         glUseProgram(shaderProgram);
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
         // Check and proc events, swap render buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -191,8 +217,17 @@ int main() {
         auto delta = std::chrono::high_resolution_clock::now() - now;
         float frameTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() ;
         float fps = 1000.0f / frameTimeMs;
-        std::cout << "FPS: " << fps << "\n Frame time: " << frameTimeMs << std::endl;
+        frameLengths += frameTimeMs;
+        fpss += fps;
+        count ++;
+        if(count == frequency){
+            std::cout << "Frame length: " << frameLengths / frequency << "(" << frameTimeMs << ") " << "ms" << std::endl;
+            std::cout << "FPS: " << std::round(fpss/frequency) << "(" << fps << ")" << std::endl;
+            count = 1;
 
+            frameLengths = 0;
+            fpss = 0;
+        }
         std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / targetFPS - frameTimeMs)));
     }
 
