@@ -100,7 +100,7 @@ int main() {
 
     //space for visual splitting, will move these to own functions / class soon
 
-
+    stbi_set_flip_vertically_on_load(true);   
     unsigned int texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -122,10 +122,10 @@ int main() {
 
     float vertices[] = {
         // first triangle
-        0.5f,  0.5f, 0.0f,   1, 0, 0, 
-        0.5f, -0.5f, 0.0f,   0, 1, 0, 
-        -0.5f, -0.5f, 0.0f,  1, 0, 1, 
-        -0.5f,  0.5f, 0.0f,  1, 0, 1 
+        0.5f,  0.5f, 0.0f,   1, 0, 0,   1, 1,
+        0.5f, -0.5f, 0.0f,   0, 1, 0,   1, 0,
+        -0.5f, -0.5f, 0.0f,  1, 0, 1,   0, 0,
+        -0.5f,  0.5f, 0.0f,  1, 0, 1,   0, 1
     };
     unsigned int indices[] = {  
         0, 1, 3,   // first triangle
@@ -148,10 +148,12 @@ int main() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(decltype(vertices[0])), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(decltype(vertices[0])), (void*)(3 * sizeof(decltype(vertices[0]))));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertices[0])), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertices[0])), (void*)(3 * sizeof(decltype(vertices[0]))));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertices[0])), (void*)(6 * sizeof(decltype(vertices[0]))));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
 
 
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -206,6 +208,9 @@ int main() {
 
 
 
+    glUseProgram(shaderProgram);
+
+    glBindTexture(GL_TEXTURE_2D, texture);
 
 
 
