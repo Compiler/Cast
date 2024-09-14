@@ -95,8 +95,38 @@ int initEngineDeps(){
     return 0;
 
 }
+
+
+
+std::vector<float> vertexDataFlat;
+std::vector<int> indexDataFlat;
+void addRectangle(float x, float y, float width, float height) {
+    static std::vector<int> indexTemplate = {0, 1, 3, 1, 2, 3};
+    static int vertices = 4;
+    int currentOffsetMultiplier = vertexDataFlat.size() / 6;
+    // First vertex
+    std::vector<float> v1 = {x, y, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f};
+    vertexDataFlat.insert(vertexDataFlat.end(), v1.begin(), v1.end());
+
+    // Second vertex
+    std::vector<float> v2 = {x, y - height, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f};
+    vertexDataFlat.insert(vertexDataFlat.end(), v2.begin(), v2.end());
+
+    // Third verte
+    std::vector<float> v3 = {x - width, y - height, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f};
+    vertexDataFlat.insert(vertexDataFlat.end(), v3.begin(), v3.end());
+
+    // Fourth vertex
+    std::vector<float> v4 = {x - width, y, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f};
+    vertexDataFlat.insert(vertexDataFlat.end(), v4.begin(), v4.end());
+
+    for(int i = 0; i < indexTemplate.size(); i++){
+        indexDataFlat.push_back(currentOffsetMultiplier * vertices + indexTemplate[i]);
+    }
+}
+
 int main() {
-    
+   
     float targetFPS = 25;
     auto rand = [](){return 0.3;};//return std::rand() % 255 / 255.0f;};
 
@@ -124,20 +154,9 @@ int main() {
     }
     stbi_image_free(data);
 
-    float vertices[] = {
-        // first triangle
-        0.5f,  0.5f, 0.0f,   1, 0, 0,   1, 1,
-        0.5f, -0.5f, 0.0f,   0, 1, 0,   1, 0,
-        -0.5f, -0.5f, 0.0f,  1, 0, 1,   0, 0,
-        -0.5f,  0.5f, 0.0f,  1, 0, 1,   0, 1
-    };
-    unsigned int indices[] = {  
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
-    };
 
-    std::cout << "Triangle vertices: \n";
-    for(int i = 0; i < 6; i++) std::cout << "( " << vertices[i * 3] << ", " << vertices[i*3 + 1] << " ) " << std::endl;
+    for(float i = -1.0; i < 1.5; i += 0.01)
+    addRectangle(i, -0.70, 0.1, 0.1);
 
     unsigned int vao; glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
@@ -145,16 +164,19 @@ int main() {
     unsigned int vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexDataFlat.size() * sizeof(decltype(vertexDataFlat.front())), vertexDataFlat.data(), GL_STATIC_DRAW);
 
     unsigned int ebo;
     glGenBuffers(1, &ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataFlat.size() * sizeof(int), indexDataFlat.data(), GL_STATIC_DRAW);
+    std::cout << "Element buffer: [";
+    for(auto element : indexDataFlat) std::cout << element << ", ";
+    std::cout << "]\n";
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertices[0])), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertices[0])), (void*)(3 * sizeof(decltype(vertices[0]))));
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertices[0])), (void*)(6 * sizeof(decltype(vertices[0]))));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertexDataFlat[0])), (void*)0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertexDataFlat[0])), (void*)(3 * sizeof(decltype(vertexDataFlat[0]))));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(decltype(vertexDataFlat[0])), (void*)(6 * sizeof(decltype(vertexDataFlat[0]))));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
@@ -236,8 +258,9 @@ int main() {
 
         glUseProgram(shaderProgram);
         glUniform1f(glGetUniformLocation(shaderProgram, "u_time"), glfwGetTime());
+        //glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, vertexDataFlat.size(), GL_UNSIGNED_INT, 0);
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         // Check and proc events, swap render buffers
         glfwSwapBuffers(window);

@@ -13,7 +13,9 @@ BIN_DIR=bin
 OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o
 
 main: $(OBJECTS) $(BIN_DIR)/$(EXE_NAME)
+	@echo "Executable size: $(shell ls -lh $(BIN_DIR)/$(EXE_NAME) | awk '{print $$5}')"
 	./$(BIN_DIR)/$(EXE_NAME)
+
 
 %.o: %.cpp
 	@echo "Recompiling object files in Cast " $@ " " $^

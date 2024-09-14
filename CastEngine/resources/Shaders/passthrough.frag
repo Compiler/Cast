@@ -11,6 +11,7 @@ uniform sampler2D u_texture;
 void main(){
 
     //FragColor = vec4(oColor.r, u_time * sin(oColor.g), oColor.b, 1.0f);
-    FragColor = texture(u_texture, oTexCoords); 
+    //
+    FragColor = vec4(texture(u_texture, oTexCoords).xyz * oColor, 1.0f); 
 
 }
