@@ -1,4 +1,7 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include <vector>
+
 #include <math.h>
 #include <chrono>
 #define GLFW_INCLUDE_NONE
@@ -54,8 +57,8 @@ void initBox2D(){
     b2BodyDef bodyDef = b2DefaultBodyDef();
     bodyDef.position = (b2Vec2){10.0f, 5.0f};
 }
-
-int main() {
+GLFWwindow* window;
+int initEngineDeps(){
     initBox2D();
     glfwSetErrorCallback(glfwErrorCallback);
     if (!glfwInit()) {
@@ -71,7 +74,7 @@ int main() {
 
     Core().init();
 
-    GLFWwindow* window = glfwCreateWindow(1920, 1080, "Cast", NULL, NULL);
+     window = glfwCreateWindow(1920, 1080, "Cast", NULL, NULL);
     if (!window) {
         std::cerr << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -85,23 +88,37 @@ int main() {
     }
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    return 0;
 
+}
+int main() {
+    
     float targetFPS = 25;
     auto rand = [](){return 0.3;};//return std::rand() % 255 / 255.0f;};
 
-
+    if(initEngineDeps() != 0) return -1;
 
     //space for visual splitting, will move these to own functions / class soon
 
 
-
-
-
-    // x,y correspond to center of triangle
-    float x = 0;
-    float y = 0;
-    float base = 1;
-    float height = 1;
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    // set the texture wrapping/filtering options (on the currently bound texture object)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    // load and generate the texture
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("resources/Assets/grass_jpg.jpg", &width, &height, &nrChannels, 0);
+    if (data){
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
 
     float vertices[] = {
         // first triangle
@@ -139,7 +156,7 @@ int main() {
 
     unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
-    std::string vertexShaderCode = readFile("Resources/passthrough.vert");
+    std::string vertexShaderCode = readFile("Resources/Shaders/passthrough.vert");
     const char* sourceCStr = vertexShaderCode.c_str();
     glShaderSource(vertexShader, 1, &sourceCStr, NULL);
     glCompileShader(vertexShader);
@@ -156,7 +173,7 @@ int main() {
 
     unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-    std::string fragmentShaderCode = readFile("Resources/passthrough.frag");
+    std::string fragmentShaderCode = readFile("Resources/Shaders/passthrough.frag");
     const char* fragSourceCStr = fragmentShaderCode.c_str();
     glShaderSource(fragmentShader, 1, &fragSourceCStr, NULL);
     glCompileShader(fragmentShader);
