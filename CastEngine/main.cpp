@@ -13,6 +13,10 @@
 #include <stb_image/stb_image.h>
 #include <box2d/box2d.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #ifdef CAST_MAC_OS
 #define OPENGL_MINOR_VERSION 1
 #else 
