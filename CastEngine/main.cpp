@@ -113,6 +113,7 @@ int main() {
     renderer.addRectangle(-0.5, 0, 0.25, 0.25, 0);
     renderer.addRectangle(-0.25, 0, 0.25, 0.25, 1);
     renderer.addRectangle(0, 0, 0.25, 0.25, 2);
+    renderer.addRectangle(0.25, 0, 0.25, 0.25, 3);
 
     float sz = 0.10;
     float startingY = -0.75;
@@ -121,8 +122,6 @@ int main() {
             renderer.addRectangle(x, y, sz, sz, y == startingY ? 1 : 2);
         }
     }
-
-
 
     myShader.addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
     myShader.addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/passthrough.frag");
