@@ -1,0 +1,6 @@
+CompileFlags:
+  Add: 
+    - -std=c++17
+    - -I../../include/
+    - -I../../Cast/
+    - -I../../include/stb_image/

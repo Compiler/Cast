@@ -10,6 +10,7 @@
 #include <iostream>
 #include <thread>
 #include <Cast/Core.h>
+#include <Cast/Rendering/Shader.h>
 #include <stb_image/stb_image.h>
 #include <box2d/box2d.h>
 
@@ -103,7 +104,7 @@ std::vector<int> indexDataFlat;
 void addRectangle(float x, float y, float width, float height, float textureID) {
     static std::vector<int> indexTemplate = {0, 1, 3, 1, 2, 3};
     static int vertices = 4;
-    int currentOffsetMultiplier = vertexDataFlat.size() / 9;
+    //int currentOffsetMultiplier = vertexDataFlat.size() / 9;
     static int n = 0;
 
 
@@ -118,7 +119,7 @@ void addRectangle(float x, float y, float width, float height, float textureID) 
     vertexDataFlat.insert(vertexDataFlat.end(), v4.begin(), v4.end());
 
     // 0, 1, 3, 1, 2, 3
-    for(int i = 0; i < indexTemplate.size(); i++){
+    for(size_t i = 0; i < indexTemplate.size(); i++){
         indexDataFlat.push_back(n * vertices + indexTemplate[i]);
     }
     n++;
@@ -197,60 +198,14 @@ glDisable(GL_CULL_FACE);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-
-    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-    std::string vertexShaderCode = readFile("Resources/Shaders/passthrough.vert");
-    const char* sourceCStr = vertexShaderCode.c_str();
-    glShaderSource(vertexShader, 1, &sourceCStr, NULL);
-    glCompileShader(vertexShader);
-
-    // Check for success
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if(!success){
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cerr << "ShaderError::Vertex::CompilationFailed\t" << infoLog << std::endl;
-
-    }else std::cout << "Shader::Vertex compiled successfully\n";
-
-    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    std::string fragmentShaderCode = readFile("Resources/Shaders/passthrough.frag");
-    const char* fragSourceCStr = fragmentShaderCode.c_str();
-    glShaderSource(fragmentShader, 1, &fragSourceCStr, NULL);
-    glCompileShader(fragmentShader);
-
-    // Check for success
-    char infoLogFrag[512];
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if(!success){
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLogFrag);
-        std::cerr << "ShaderError::Fragment::CompilationFailed\t" << infoLogFrag << std::endl;
-    }else std::cout << "Shader::Fragment compiled successfully\n";
-
-
-
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+    Shader myShader{};
     
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    myShader.addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
+    myShader.addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/passthrough.frag");
+    myShader.compile();
 
-     // Check for success
-    char infoLogShader[512];
-    glGetShaderiv(shaderProgram, GL_LINK_STATUS, &success);
-    if(!success){
-        glGetShaderInfoLog(shaderProgram, 512, NULL, infoLogShader);
-        std::cerr << "ShaderError::ShaderProgram::LinkFailed\t" << infoLogShader << std::endl;
-    }else std::cout << "Shader::Program compiled successfully\n";
-
-
-
-
+    unsigned int shaderProgram = myShader.getUID();
+    
 
     unsigned int texture1 = generateTexture("Resources/Assets/grass_jpg.jpg");
     unsigned int texture2 = generateTexture("Resources/Assets/dirt.png");
@@ -265,14 +220,15 @@ glDisable(GL_CULL_FACE);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture4"), 3);
     
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, texture3);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, texture4);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, texture3);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, texture4);
+
     int frequency = 25;
     float frameLengths;
     float fpss;
