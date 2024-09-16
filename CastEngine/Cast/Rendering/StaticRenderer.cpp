@@ -2,6 +2,7 @@
 
 bool StaticRenderer::addTexture(std::string filepath) {
     unsigned int texture;
+    glActiveTexture(GL_TEXTURE15);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
