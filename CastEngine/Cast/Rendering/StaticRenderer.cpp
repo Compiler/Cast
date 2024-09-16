@@ -18,14 +18,15 @@ bool StaticRenderer::addTexture(std::string filepath) {
         GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;  // Determine format based on number of channels
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
+        _textures.push_back(texture);
+        std::cout << "Bound texture " << texture << " to " << _textures.size() - 1 << std::endl;
+        glActiveTexture(GL_TEXTURE0 + _textures.size() - 1);
+        glBindTexture(GL_TEXTURE_2D, texture);
     } else {
         std::cout << "Failed to load texture: " << filepath << std::endl;
+        return false;
     }
-    _textures.push_back(texture);
-
-    glActiveTexture(GL_TEXTURE0 + (_textures.size() - 1));
-    glBindTexture(GL_TEXTURE_2D, _textures.back());
     stbi_image_free(data);
 
-    return texture;
+    return true;
 }

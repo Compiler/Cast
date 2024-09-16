@@ -58,13 +58,8 @@ void processInput(GLFWwindow* window) {
 void glfwErrorCallback(int error, const char* description) {
     std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
 }
-void initBox2D(){
-    b2BodyDef bodyDef = b2DefaultBodyDef();
-    bodyDef.position = (b2Vec2){10.0f, 5.0f};
-}
 GLFWwindow* window;
 int initEngineDeps(){
-    initBox2D();
     glfwSetErrorCallback(glfwErrorCallback);
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -143,12 +138,17 @@ glDisable(GL_CULL_FACE);
 
     float startingY = -0.75;
 
-    addRectangle(-1, 1, 2, 2, 2);
+    addRectangle(-1, 1, 2, 2, 3);
+    addRectangle(-0.5, 0, 0.25, 0.25, 0);
+    addRectangle(-0.25, 0, 0.25, 0.25, 1);
+    addRectangle(0, 0, 0.25, 0.25, 2);
+    addRectangle(0.25, 0, 0.25, 0.25, 3);
+    //addRectangle(0, startingY + sz + 1/5.0f, 1/5.0f, 1/5.0f, 3);
     //addRectangle(0, startingY + sz + 1/5.0f, 1/5.0f, 1/5.0f, 3);
 
     for(float x = -2 ; x <= 2; x += sz) {
         for(float y = startingY; y >= -1.5; y -= sz) {
-            addRectangle(x, y, sz, sz, y != startingY);
+            addRectangle(x, y, sz, sz, y == startingY ? 1 : 2);
         }
     }
 
@@ -184,17 +184,17 @@ glDisable(GL_CULL_FACE);
     
 
     glUseProgram(shaderProgram);
+
+    renderer.addTexture("Resources/Assets/player.png");
+    renderer.addTexture("Resources/Assets/grass_jpg.jpg");
+    renderer.addTexture("Resources/Assets/dirt.png");
+    renderer.addTexture("Resources/Assets/landscape_mountains.png");
+
+
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture1"), 0);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture2"), 1);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture3"), 2);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture4"), 3);
-
-    renderer.addTexture("Resources/Assets/grass_jpg.jpg");
-    renderer.addTexture("Resources/Assets/dirt.png");
-    renderer.addTexture("Resources/Assets/landscape_mountains.png");
-    renderer.addTexture("Resources/Assets/player.png");
-
-
     
 
 
@@ -219,7 +219,7 @@ glDisable(GL_CULL_FACE);
         glUniform1f(glGetUniformLocation(shaderProgram, "u_time"), glfwGetTime());
         //glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, vertexDataFlat.size()* 2, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, vertexDataFlat.size(), GL_UNSIGNED_INT, 0);
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         // Check and proc events, swap render buffers
         glfwSwapBuffers(window);
