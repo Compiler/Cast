@@ -10,7 +10,7 @@ EXE_NAME=CastEngine
 GLAD_ROOT=include/glad_root
 BIN_DIR=bin
 
-OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o Cast/Rendering/shader.o
+OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o Cast/Rendering/StaticRenderer.o Cast/Rendering/shader.o
 
 main: $(OBJECTS) $(BIN_DIR)/$(EXE_NAME)
 	@echo "Executable size: $(shell ls -lh $(BIN_DIR)/$(EXE_NAME) | awk '{print $$5}')"

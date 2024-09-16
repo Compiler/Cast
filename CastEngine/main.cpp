@@ -11,7 +11,7 @@
 #include <thread>
 #include <Cast/Core.h>
 #include <Cast/Rendering/Shader.h>
-#include <stb_image/stb_image.h>
+#include <Cast/Rendering/StaticRenderer.h>
 #include <box2d/box2d.h>
 
 #include <glm/glm.hpp>
@@ -125,31 +125,6 @@ void addRectangle(float x, float y, float width, float height, float textureID) 
     n++;
 }
 
-unsigned int generateTexture(std::string filePath) {
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    // Set texture wrapping/filtering options
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Load the texture image
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load(filePath.c_str(), &width, &height, &nrChannels, 0);
-    if (data) {
-        GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;  // Determine format based on number of channels
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        std::cout << "Failed to load texture: " << filePath << std::endl;
-    }
-    stbi_image_free(data);
-
-    return texture;
-}
 
 int main() {
    
@@ -198,6 +173,7 @@ glDisable(GL_CULL_FACE);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
+    StaticRenderer renderer{};
     Shader myShader{};
     
     myShader.addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
@@ -207,27 +183,20 @@ glDisable(GL_CULL_FACE);
     unsigned int shaderProgram = myShader.getUID();
     
 
-    unsigned int texture1 = generateTexture("Resources/Assets/grass_jpg.jpg");
-    unsigned int texture2 = generateTexture("Resources/Assets/dirt.png");
-    unsigned int texture3 = generateTexture("Resources/Assets/landscape_mountains.png");
-    unsigned int texture4 = generateTexture("Resources/Assets/player.png");
-
-
     glUseProgram(shaderProgram);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture1"), 0);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture2"), 1);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture3"), 2);
     glUniform1i(glGetUniformLocation(shaderProgram, "u_texture4"), 3);
+
+    renderer.addTexture("Resources/Assets/grass_jpg.jpg");
+    renderer.addTexture("Resources/Assets/dirt.png");
+    renderer.addTexture("Resources/Assets/landscape_mountains.png");
+    renderer.addTexture("Resources/Assets/player.png");
+
+
     
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, texture3);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, texture4);
 
     int frequency = 25;
     float frameLengths;

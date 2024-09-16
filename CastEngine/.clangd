@@ -1,5 +1,6 @@
 CompileFlags:
   Add: 
+    - -I/mnt/c/Users/19146/Code/Cast/CastEngine
     - -std=c++17
     - -Iinclude/
     - -ICast/
