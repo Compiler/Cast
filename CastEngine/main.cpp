@@ -94,33 +94,6 @@ int initEngineDeps(){
 
 
 
-std::vector<float> vertexDataFlat;
-std::vector<int> indexDataFlat;
-void addRectangle(float x, float y, float width, float height, float textureID) {
-    static std::vector<int> indexTemplate = {0, 1, 3, 1, 2, 3};
-    static int vertices = 4;
-    //int currentOffsetMultiplier = vertexDataFlat.size() / 9;
-    static int n = 0;
-
-
-    std::vector<float> v1 = {x, y, 1.0f,                    1.0f, 1.0f, 1.0f,       0.0f, 1.0f, textureID};
-    std::vector<float> v2 = {x + width, y, 1.0f,            1.0f, 1.0f, 1.0f,       1.0f, 1.0f, textureID};
-    std::vector<float> v3 = {x + width, y - height, 1.0f,   1.0f, 1.0f, 1.0f,       1.0f, 0.0f, textureID};
-    std::vector<float> v4 = {x, y - height, 1.0f,           1.0f, 1.0f, 1.0f,       0.0f, 0.0f, textureID};
-
-    vertexDataFlat.insert(vertexDataFlat.end(), v1.begin(), v1.end());
-    vertexDataFlat.insert(vertexDataFlat.end(), v2.begin(), v2.end());
-    vertexDataFlat.insert(vertexDataFlat.end(), v3.begin(), v3.end());
-    vertexDataFlat.insert(vertexDataFlat.end(), v4.begin(), v4.end());
-
-    // 0, 1, 3, 1, 2, 3
-    for(size_t i = 0; i < indexTemplate.size(); i++){
-        indexDataFlat.push_back(n * vertices + indexTemplate[i]);
-    }
-    n++;
-}
-
-
 int main() {
    
     float targetFPS = 25;
@@ -132,50 +105,25 @@ int main() {
 
     stbi_set_flip_vertically_on_load(true);   
    
-glDisable(GL_CULL_FACE);
-    float sz = 0.10;
+    glDisable(GL_CULL_FACE);
     
+    StaticRenderer renderer{};
+    Shader myShader{};    
+    renderer.addRectangle(-1, 1, 2, 2, 3);
+    renderer.addRectangle(-0.5, 0, 0.25, 0.25, 0);
+    renderer.addRectangle(-0.25, 0, 0.25, 0.25, 1);
+    renderer.addRectangle(0, 0, 0.25, 0.25, 2);
 
+    float sz = 0.10;
     float startingY = -0.75;
-
-    addRectangle(-1, 1, 2, 2, 3);
-    addRectangle(-0.5, 0, 0.25, 0.25, 0);
-    addRectangle(-0.25, 0, 0.25, 0.25, 1);
-    addRectangle(0, 0, 0.25, 0.25, 2);
-    addRectangle(0.25, 0, 0.25, 0.25, 3);
-    //addRectangle(0, startingY + sz + 1/5.0f, 1/5.0f, 1/5.0f, 3);
-    //addRectangle(0, startingY + sz + 1/5.0f, 1/5.0f, 1/5.0f, 3);
-
     for(float x = -2 ; x <= 2; x += sz) {
         for(float y = startingY; y >= -1.5; y -= sz) {
-            addRectangle(x, y, sz, sz, y == startingY ? 1 : 2);
+            renderer.addRectangle(x, y, sz, sz, y == startingY ? 1 : 2);
         }
     }
 
 
-    unsigned int vao; glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
 
-    unsigned int vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, vertexDataFlat.size() * sizeof(decltype(vertexDataFlat.front())), vertexDataFlat.data(), GL_STATIC_DRAW);
-
-    unsigned int ebo;
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexDataFlat.size() * sizeof(int), indexDataFlat.data(), GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(decltype(vertexDataFlat[0])), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(decltype(vertexDataFlat[0])), (void*)(3 * sizeof(decltype(vertexDataFlat[0]))));
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(decltype(vertexDataFlat[0])), (void*)(6 * sizeof(decltype(vertexDataFlat[0]))));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-
-    StaticRenderer renderer{};
-    Shader myShader{};
-    
     myShader.addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
     myShader.addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/passthrough.frag");
     myShader.compile();
@@ -203,6 +151,7 @@ glDisable(GL_CULL_FACE);
     float fpss;
     
     int count = 1;
+    renderer.preDraw();
     while (!glfwWindowShouldClose(window)) {
         auto now = std::chrono::high_resolution_clock::now();
 
@@ -218,8 +167,7 @@ glDisable(GL_CULL_FACE);
         glUseProgram(shaderProgram);
         glUniform1f(glGetUniformLocation(shaderProgram, "u_time"), glfwGetTime());
         //glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
-        glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, vertexDataFlat.size(), GL_UNSIGNED_INT, 0);
+        renderer.draw();
         //glDrawArrays(GL_TRIANGLES, 0, 6);
         // Check and proc events, swap render buffers
         glfwSwapBuffers(window);
