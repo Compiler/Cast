@@ -17,15 +17,17 @@ void main(){
     //FragColor = vec4(oColor.r, u_time * sin(oColor.g), oColor.b, 1.0f);
     //
     //FragColor = vec4(texture(u_texture1, oTexCoords).xyz * oColor, 1.0f); 
-    vec4 col;
-    if(oTexCoords.z == 0)
-        col = texture(u_texture1, oTexCoords.xy);
-    else if(oTexCoords.z == 1)
-        col = texture(u_texture2, oTexCoords.xy);
-    else if(oTexCoords.z == 2)
-        col = texture(u_texture3, oTexCoords.xy);
-    else 
-        col = texture(u_texture4, oTexCoords.xy);
+    vec4 col = vec4(oColor.rgb, 1.0f);
+    if(oTexCoords.z != -1){
+        if(oTexCoords.z == 0)
+            col = texture(u_texture1, oTexCoords.xy);
+        else if(oTexCoords.z == 1)
+            col = texture(u_texture2, oTexCoords.xy);
+        else if(oTexCoords.z == 2)
+            col = texture(u_texture3, oTexCoords.xy);
+        else 
+            col = texture(u_texture4, oTexCoords.xy);
+    }
 
     float dist = 1.0;
     float distFromTop = gl_FragCoord.y;
@@ -33,5 +35,6 @@ void main(){
     if(gl_FragCoord.y < 90.5) dist = 0.5;
     dist = smth;
     
+    //dist = 1.0f; // reset it until we have logic for the shadowing
     FragColor = vec4(col.xyz * dist, col.a);  // Simple blend between the two textures
 }
