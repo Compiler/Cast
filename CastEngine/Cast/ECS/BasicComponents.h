@@ -1,5 +1,4 @@
 #pragma once
-#include "Rendering/Vertex.h"
 #include <string>
 #include <glm/vec4.hpp>
 #include <vector>

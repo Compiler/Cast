@@ -2,7 +2,7 @@
 #include "../../include/glad/glad.h"
 #include <vector>
 #include <string>
-#include <Cast/Components/BasicComponents.h>
+#include <Cast/ECS/BasicComponents.h>
 #include <iostream>
 class DynamicRenderer{
 

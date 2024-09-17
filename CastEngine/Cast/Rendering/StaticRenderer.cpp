@@ -1,4 +1,6 @@
 #include "StaticRenderer.h"
+#include <iostream>
+#include <include/stb_image/stb_image.h>
 
 StaticRenderer::StaticRenderer(){
     
@@ -59,6 +61,7 @@ void StaticRenderer::draw(){
 
 bool StaticRenderer::addTexture(std::string filepath) {
     unsigned int texture;
+    stbi_set_flip_vertically_on_load(true);   
     glActiveTexture(GL_TEXTURE15);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);

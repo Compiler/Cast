@@ -1,9 +1,9 @@
 #pragma once
-#include <iostream>
-#include "../../include/glad/glad.h"
+
 #include <vector>
+#include <glad/glad.h>
 #include <string>
-#include <Cast/Components/BasicComponents.h>
+#include <Cast/ECS/BasicComponents.h>
 class StaticRenderer{
 
     private:
