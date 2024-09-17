@@ -49,6 +49,8 @@ class Core{
         DynamicRenderer rend;
         Shader myShader;    
     public:
+        // Global variable
+        entt::registry registry;
         Core() {
             std::cout << "Created core object.";
         }

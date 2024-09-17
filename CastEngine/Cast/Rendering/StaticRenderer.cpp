@@ -1,3 +1,4 @@
+#define STB_IMAGE_IMPLEMENTATION
 #include "StaticRenderer.h"
 #include <iostream>
 #include <include/stb_image/stb_image.h>

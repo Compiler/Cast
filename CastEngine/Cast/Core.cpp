@@ -51,7 +51,6 @@ int Core::init(){
     }
 
     //ENTT
-    entt::registry registry;
 
     auto entity = registry.create();
 
