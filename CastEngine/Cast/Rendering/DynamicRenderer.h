@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 #include "Vertex.h"
-class StaticRenderer{
+class DynamicRenderer{
 
     private:
         std::vector<Cast::Vertex> _buffer;
@@ -12,11 +12,12 @@ class StaticRenderer{
         std::vector<unsigned int> _textures;
         unsigned int _ebo, _vao, _vbo;
 
+        void updateBuffer(const std::vector<Cast::Vertex> newRect);
 
     public:
 
-        StaticRenderer();
-        void addRectangle(float x, float y, float width, float height, float textureID);
+        DynamicRenderer();
+        void addRectangle(std::string name, float x, float y, float width, float height, float textureID);
         void draw();
         void preDraw();
         bool addTexture(std::string filePath);

@@ -12,11 +12,8 @@
 #include <Cast/Core.h>
 #include <Cast/Rendering/Shader.h>
 #include <Cast/Rendering/StaticRenderer.h>
+#include <Cast/Rendering/DynamicRenderer.h>
 #include <box2d/box2d.h>
-
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #ifdef CAST_MAC_OS
 #define OPENGL_MINOR_VERSION 1
@@ -27,23 +24,9 @@
 #define OPENGL_MINOR_VERSION 2
 #endif
 #endif
-
-
-#include <fstream>
-#include <sstream>
 #include <string>
 
-std::string readFile(std::string filePath){
-    std::ifstream file(filePath);
-    if(!file){
-        std::cerr << "Failed to load file " << filePath << std::endl;
-        return "";
-    }
-    std::ostringstream ss;
-    ss << file.rdbuf();
-    return ss.str();
-}
-
+float myX = 0;
 void framebuffer_size_callback(GLFWwindow* , int width, int height) {
     glViewport(0, 0, width, height);
 }
@@ -53,6 +36,10 @@ void processInput(GLFWwindow* window) {
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        myX += 0.1;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        myX -= 0.1;
 }
 
 void glfwErrorCallback(int error, const char* description) {
@@ -97,17 +84,15 @@ int initEngineDeps(){
 int main() {
    
     float targetFPS = 25;
-    auto rand = [](){return 0.3;};//return std::rand() % 255 / 255.0f;};
-
     if(initEngineDeps() != 0) return -1;
-
-    //space for visual splitting, will move these to own functions / class soon
 
     stbi_set_flip_vertically_on_load(true);   
    
     glDisable(GL_CULL_FACE);
     
     StaticRenderer renderer{};
+    DynamicRenderer rend{};
+    rend.addRectangle("Dork", myX, 0, 0.25, 0.25, -1); 
     Shader myShader{};    
     renderer.addRectangle(-1, 1, 2, 2, 3);
     renderer.addRectangle(-0.5, 0, 0.25, 0.25, 0);
@@ -150,7 +135,7 @@ int main() {
     float fpss;
     
     int count = 1;
-    renderer.preDraw();
+    //renderer.preDraw();
     while (!glfwWindowShouldClose(window)) {
         auto now = std::chrono::high_resolution_clock::now();
 
@@ -159,20 +144,19 @@ int main() {
         processInput(window);
 
         // Rendering commands
-        glClearColor(rand(), rand(), rand(), 1);
+        glClearColor(0.7, 0.5, 0.8, 1);
         glClear(GL_COLOR_BUFFER_BIT);
 
 
         glUseProgram(shaderProgram);
         glUniform1f(glGetUniformLocation(shaderProgram, "u_time"), glfwGetTime());
-        //glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "transform"), 1, GL_FALSE, glm::value_ptr(trans));
-        renderer.draw();
-        //glDrawArrays(GL_TRIANGLES, 0, 6);
+        //renderer.draw();
+        rend.draw();
+
+
         // Check and proc events, swap render buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
-
-
 
         auto delta = std::chrono::high_resolution_clock::now() - now;
         float frameTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() ;
@@ -181,8 +165,8 @@ int main() {
         fpss += fps;
         count ++;
         if(count == frequency){
-            std::cout << "Frame length: " << frameLengths / frequency << "(" << frameTimeMs << ") " << "ms" << std::endl;
-            std::cout << "FPS: " << std::round(fpss/frequency) << "(" << fps << ")" << std::endl;
+            std::cout << "Frame length: \t" << frameLengths / frequency << "ms\t(" << frameTimeMs << ") " << "ms" << std::endl;
+            std::cout << "FPS: \t\t" << std::round(fpss/frequency) << "\t(" << fps << ")" << std::endl;
             count = 1;
 
             frameLengths = 0;

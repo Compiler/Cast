@@ -26,9 +26,6 @@ void StaticRenderer::preDraw(){
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
 
-    std::cout << "Float: " << sizeof(float) << " Vertex: " << sizeof(Cast::Vertex) << std::endl;
-    std::cout << "Rendering " << _indexBuffer.size() << " vertices which is " << sizeof(_buffer.front()) * _buffer.size() << " bytes" << std::endl;
-    std::cout << "Rendering " << _buffer.size() << " vertices which is " << sizeof(_buffer.front()) * _buffer.size() << " bytes" << std::endl;
 }
 
 void StaticRenderer::addRectangle(float x, float y, float width, float height, float textureID){
@@ -52,7 +49,6 @@ void StaticRenderer::addRectangle(float x, float y, float width, float height, f
         _indexBuffer.push_back(n * vertices + indexTemplate[i]);
     }
     n++;
-    std::cout << "Num rectangles: " << n << std::endl;
 }
 
 void StaticRenderer::draw(){
