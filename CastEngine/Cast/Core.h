@@ -45,13 +45,16 @@ class Core{
         static inline void glfwErrorCallback(int error, const char* description) {
             std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
         }
-        StaticRenderer renderer;
-        DynamicRenderer rend;
-        Shader myShader;    
+        StaticRenderer* renderer;
+        DynamicRenderer* dyRenderer;
+        Shader* myShader;    
+        int _initEngineDependencies();
     public:
+
         // Global variable
         entt::registry registry;
         Core() {
+            _initEngineDependencies();
             std::cout << "Created core object.";
         }
         int init();
