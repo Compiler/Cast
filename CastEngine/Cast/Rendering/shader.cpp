@@ -6,7 +6,7 @@ void Shader::addShader(unsigned int type, std::string filepath){
     int success;
     unsigned int shader = glCreateShader(type);
 
-    std::string shaderSourceCode = Cast::readFile(filepath);
+    std::string shaderSourceCode = Cast::ResourceManager::readFile(filepath);
     const char* sourceCodeCStr = shaderSourceCode.c_str();
     glShaderSource(shader, 1, &sourceCodeCStr, NULL);
     glCompileShader(shader);

@@ -2,8 +2,8 @@
 #include "../../include/glad/glad.h"
 #include <vector>
 #include <string>
+#include <Cast/Components/BasicComponents.h>
 #include <iostream>
-#include "Vertex.h"
 class DynamicRenderer{
 
     private:

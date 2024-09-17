@@ -79,6 +79,12 @@ int initEngineDeps(){
 
 }
 
+#include <entt/entt.hpp>
+#include <Cast/Components/BasicComponents.h>
+using namespace Cast;
+void init(){
+}
+
 
 
 int main() {
@@ -93,6 +99,7 @@ int main() {
     StaticRenderer renderer{};
     DynamicRenderer rend{};
     rend.addRectangle("Dork", myX, 0, 0.25, 0.25, -1); 
+    rend.addRectangle("Dork", myX, 0.5, 0.25, 0.25, 1); 
     Shader myShader{};    
     renderer.addRectangle(-1, 1, 2, 2, 3);
     renderer.addRectangle(-0.5, 0, 0.25, 0.25, 0);
@@ -108,6 +115,20 @@ int main() {
         }
     }
 
+    //ENTT
+    entt::registry registry;
+
+    auto entity = registry.create();
+
+    auto transform = registry.emplace<Transform>(entity);
+    registry.emplace<Renderable>(entity);
+    
+    transform.position.x = 0.5;
+    transform.position.y = 0.5;
+
+    for(auto&& [entity, trans, rend] : registry.view<Transform, Renderable>().each()){
+        renderer.addRectangle(trans.position.x, trans.position.y, 0.5, 0.5, -1);
+    }
     myShader.addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
     myShader.addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/passthrough.frag");
     myShader.compile();
@@ -117,7 +138,7 @@ int main() {
 
     glUseProgram(shaderProgram);
 
-    renderer.addTexture("Resources/Assets/player.png");
+    renderer.addTexture("Resources/Assets/spritesheet.png");
     renderer.addTexture("Resources/Assets/grass_jpg.jpg");
     renderer.addTexture("Resources/Assets/dirt.png");
     renderer.addTexture("Resources/Assets/landscape_mountains.png");
@@ -130,12 +151,14 @@ int main() {
     
 
 
+
+
     int frequency = 25;
     float frameLengths;
     float fpss;
     
     int count = 1;
-    //renderer.preDraw();
+    renderer.preDraw();
     while (!glfwWindowShouldClose(window)) {
         auto now = std::chrono::high_resolution_clock::now();
 
@@ -150,8 +173,8 @@ int main() {
 
         glUseProgram(shaderProgram);
         glUniform1f(glGetUniformLocation(shaderProgram, "u_time"), glfwGetTime());
-        //renderer.draw();
-        rend.draw();
+        renderer.draw();
+        //rend.draw();
 
 
         // Check and proc events, swap render buffers
