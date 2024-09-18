@@ -7,7 +7,7 @@ int main() {
     //Error is due to opengl stuff called before its ready.
     Core engineCore{};
     engineCore.init();
-    float targetFPS = 5;
+    float targetFPS = 144;
     int frequency = targetFPS;
     float frameLengths;
     float fpss;
@@ -22,6 +22,7 @@ int main() {
         auto delta = std::chrono::high_resolution_clock::now() - now;
         float frameTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() ;
         float fps = 1000.0f / frameTimeMs;
+        engineCore.setDelta(frameTimeMs);
         frameLengths += frameTimeMs;
         fpss += fps;
         count ++;

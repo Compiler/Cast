@@ -4,6 +4,8 @@
 #define CHECK_GL_ERROR() Cast::CHECK_FOR_ERROR(__FILE__, __LINE__)
 namespace Cast{
 
+    extern float frameTimeMs;
+
     inline void CHECK_FOR_ERROR(const char* file, int line) {
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {
