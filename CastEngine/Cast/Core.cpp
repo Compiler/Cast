@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <chrono>
 
-float Core::myX = 0;
-float Core::myY = 0;
+float Core::myX = 900;
+float Core::myY = 900;
 float Cast::frameTimeMs = 0;
 int Core::init(){
    
@@ -18,16 +18,16 @@ int Core::init(){
     myShader = new Shader();
     CHECK_GL_ERROR();
 
-    renderer->addRectangle(-1, 1, 2, 2, 3);
+    renderer->addRectangle(0, 0, 1980, 1080, 3);
     renderer->addRectangle(-0.5, 0, 0.25, 0.25, 0);
     renderer->addRectangle(-0.25, 0, 0.25, 0.25, 1);
     renderer->addRectangle(0, 0, 0.25, 0.25, 2);
     renderer->addRectangle(0.25, 0, 0.25, 0.25, 3);
 
-    float sz = 0.10;
-    float startingY = -0.75;
-    for(float x = -2 ; x <= 2; x += sz) {
-        for(float y = startingY; y >= -1.5; y -= sz) {
+    float sz = 50;
+    float startingY = 300;
+    for(float x = -2000 ; x <= 200; x += sz) {
+        for(float y = startingY; y >= -100; y -= sz) {
             renderer->addRectangle(x, y, sz, sz, y == startingY ? 1 : 2);
         }
     }
@@ -39,39 +39,29 @@ int Core::init(){
     auto transform = registry.emplace<Transform>(entity);
     registry.emplace<Renderable>(entity);
     
-    transform.position.x = 0.5;
-    transform.position.y = 0.5;
+    transform.position.x = 500;
+    transform.position.y = 500;
 
     for(auto&& [entity, trans, rend] : registry.view<Transform, Renderable>().each()){
-        renderer->addRectangle(trans.position.x, trans.position.y, 0.5, 0.5, -1);
+        renderer->addRectangle(trans.position.x, trans.position.y, 50, 50, -1);
     }
-    CHECK_GL_ERROR();
     myShader->addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
-    CHECK_GL_ERROR();
     myShader->addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/passthrough.frag");
-    CHECK_GL_ERROR();
     myShader->compile();
-    CHECK_GL_ERROR();
 
     glUseProgram(myShader->getUID());
 
-    CHECK_GL_ERROR();
     renderer->addTexture("Resources/Assets/spritesheet.png");
     renderer->addTexture("Resources/Assets/grass_jpg.jpg");
     renderer->addTexture("Resources/Assets/dirt.png");
     renderer->addTexture("Resources/Assets/landscape_mountains.png");
-
-    CHECK_GL_ERROR();
 
     glUniform1i(glGetUniformLocation(myShader->getUID(), "u_texture1"), 0);
     glUniform1i(glGetUniformLocation(myShader->getUID(), "u_texture2"), 1);
     glUniform1i(glGetUniformLocation(myShader->getUID(), "u_texture3"), 2);
     glUniform1i(glGetUniformLocation(myShader->getUID(), "u_texture4"), 3);
 
-    CHECK_GL_ERROR();
-
-
-    renderer->preDraw();
+     renderer->preDraw();
     CHECK_GL_ERROR();
 
     return 0;
@@ -95,11 +85,14 @@ void Core::render(){
 
 
         glUseProgram(myShader->getUID());
+        auto proj = glm::ortho(0.0f, 1920.0f, -1080.0f, 1080.0f, -1.0f, 5.0f);
+        glUniformMatrix4fv(glGetUniformLocation(myShader->getUID(), "u_projection"),1, GL_FALSE, glm::value_ptr(proj));
+
+
         glUniform1f(glGetUniformLocation(myShader->getUID(), "u_time"), glfwGetTime());
+
         renderer->draw();
-        glUseProgram(myShader->getUID());
-        glUniform1f(glGetUniformLocation(myShader->getUID(), "u_time"), glfwGetTime());
-        dyRenderer->addRectangle("Dork", Core::myX, Core::myY + 1, 0.1, 0.1, -1);
+        dyRenderer->addRectangle("Dork", 900 + Core::myX, 900 + Core::myY + 1, 0.1, 0.1, -1);
         dyRenderer->draw();
 
 
@@ -121,8 +114,8 @@ void Core::render(){
         static int n = 0;
         float x = myX;
         float y = myY;
-        float width = 0.25;
-        float height = 0.25;
+        float width = 100.25;
+        float height = 100.25;
         float textureID = -1;
         static std::vector<Vertex> _buffer;
         static std::vector<unsigned int> _indexBuffer;

@@ -1,10 +1,16 @@
 #pragma once
+#include <ostream>
 #define GLFW_INCLUDE_NONE
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include <Cast/Common.h>
+
 #include <math.h>
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 #include <Cast/Core.h>
 #include <Cast/Rendering/Shader.h>
@@ -41,10 +47,10 @@ class Core{
             if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, true);
 
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) Core::myY += 0.05 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) Core::myY -= 0.05 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) Core::myX += 0.05 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) Core::myX -= 0.05 / frameTimeMs;
+            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) Core::myY += 5 / frameTimeMs;
+            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) Core::myY -= 5 / frameTimeMs;
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) Core::myX += 5 / frameTimeMs;
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) Core::myX -= 5 / frameTimeMs;
         }
 
         static float myX;
