@@ -39,6 +39,7 @@ void Shader::compile(){
         glGetShaderInfoLog(_uid, 512, NULL, infoLogShader);
         std::cerr << "ShaderError::ShaderProgram::LinkFailed\t" << infoLogShader << std::endl;
     }else std::cout << "Shader::Program compiled successfully\n";
+
 }
 
 

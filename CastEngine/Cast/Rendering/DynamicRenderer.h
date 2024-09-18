@@ -12,8 +12,6 @@ class DynamicRenderer{
         std::vector<unsigned int> _textures;
         unsigned int _ebo, _vao, _vbo;
 
-        void updateBuffer(const std::vector<Cast::Vertex> newRect);
-
     public:
 
         DynamicRenderer();
