@@ -1,6 +1,7 @@
 #pragma once
 #define GLFW_INCLUDE_NONE
 
+#include <Cast/Common.h>
 #include <math.h>
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -40,8 +41,11 @@ class Core{
             if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, true);
 
+            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) Core::myX += 0.05;
+            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) Core::myX -= 0.05;
         }
 
+        static float myX;
         static inline void glfwErrorCallback(int error, const char* description) {
             std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
         }

@@ -56,8 +56,10 @@ void StaticRenderer::addRectangle(float x, float y, float width, float height, f
 
 void StaticRenderer::draw(){
 
+        {GLenum err;while ((err = glGetError()) != GL_NO_ERROR)std::cerr << "SR60:OpenGL error: " << err << std::endl;}
     glBindVertexArray(_vao);
     glDrawElements(GL_TRIANGLES, _indexBuffer.size(), GL_UNSIGNED_INT, 0);
+        {GLenum err;while ((err = glGetError()) != GL_NO_ERROR)std::cerr << "SR62:OpenGL error: " << err << std::endl;}
 }
 
 bool StaticRenderer::addTexture(std::string filepath) {
