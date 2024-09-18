@@ -4,6 +4,7 @@
 #include "Rendering/DynamicRenderer.h"
 #include "Rendering/StaticRenderer.h"
 #include <algorithm>
+#include <chrono>
 
 float Core::myX = 0;
 float Core::myY = 0;
@@ -80,7 +81,7 @@ int Core::init(){
 
 void Core::update(){
 
-    myY -= 0.01 / frameTimeMs;
+    myY -= 0.00998 / frameTimeMs;
     if(myY < -0.5) myY = -0.5;
 }
 void Core::render(){
@@ -98,8 +99,8 @@ void Core::render(){
         renderer->draw();
         glUseProgram(myShader->getUID());
         glUniform1f(glGetUniformLocation(myShader->getUID(), "u_time"), glfwGetTime());
-        //dyRenderer->addRectangle("Dork", Core::myX, 0, 0.2, 0.2, -1);
-        //dyRenderer->draw();
+        dyRenderer->addRectangle("Dork", Core::myX, Core::myY + 1, 0.1, 0.1, -1);
+        dyRenderer->draw();
 
 
         // static
@@ -109,17 +110,13 @@ void Core::render(){
         if(oneTime) glGenVertexArrays(1, &_vao);
         glBindVertexArray(_vao);
 
-if(oneTime){
-        glGenBuffers(1, &_vbo);
-        glGenBuffers(1, &_ebo);
+        if(oneTime){
+            auto now = std::chrono::high_resolution_clock::now();
+            glGenBuffers(1, &_vbo);
+            glGenBuffers(1, &_ebo);
+            std::cout << "Spent " << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - now).count() << " ms\n";
+        }
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
-        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-}
         static std::vector<int> indexTemplate = {0, 1, 3, 1, 2, 3};
         static int n = 0;
         float x = myX;
@@ -131,9 +128,9 @@ if(oneTime){
         static std::vector<unsigned int> _indexBuffer;
         static int vertices = 4;
 
-        Cast::Vertex v1 = {{x, y, 1.0f},                    {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, textureID}};
-        Cast::Vertex v2 = {{x + width, y, 1.0f},            {0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, textureID}};
-        Cast::Vertex v3 = {{x + width, y - height, 1.0f},   {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, textureID}};
+        Cast::Vertex v1 = {{x, y, 1.0f},                    {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, textureID}};
+        Cast::Vertex v2 = {{x + width, y, 1.0f},            {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, textureID}};
+        Cast::Vertex v3 = {{x + width, y - height, 1.0f},   {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, textureID}};
         Cast::Vertex v4 = {{x, y - height, 1.0f},           {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, textureID}};
 
         _buffer.push_back(v1);_buffer.push_back(v2);_buffer.push_back(v3);_buffer.push_back(v4);
@@ -150,11 +147,18 @@ if(oneTime){
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer.size() * sizeof(int), _indexBuffer.data(), GL_DYNAMIC_DRAW);
 
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
         glDrawElements(GL_TRIANGLES, _indexBuffer.size(), GL_UNSIGNED_INT, 0);
         _buffer.clear();
         _indexBuffer.clear();
         // end
         glBindVertexArray(0);
+        oneTime = false;
 
 
         // Check and proc events, swap render buffers
