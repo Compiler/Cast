@@ -64,8 +64,6 @@ class Core{
         int _initEngineDependencies();
     public:
 
-        // Global variable
-        entt::registry registry;
         Core() {
             _initEngineDependencies();
             std::cout << "Created core object.";

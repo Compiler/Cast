@@ -36,15 +36,15 @@ int Core::init(){
     renderer->addRectangle(0, 100, 100, 100, (count++) % 4);
     //ENTT
 
-    auto entity = registry.create();
+    auto entity = ecs_registry.create();
 
-    auto transform = registry.emplace<Transform>(entity);
-    registry.emplace<Renderable>(entity);
+    auto transform = ecs_registry.emplace<Transform>(entity);
+    ecs_registry.emplace<Renderable>(entity);
     
     transform.position.x = 500;
     transform.position.y = 500;
 
-    for(auto&& [entity, trans, rend] : registry.view<Transform, Renderable>().each()){
+    for(auto&& [entity, trans, rend] : ecs_registry.view<Transform, Renderable>().each()){
         renderer->addRectangle(trans.position.x, trans.position.y, 50, 50, -1);
     }
     myShader->addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
@@ -53,7 +53,7 @@ int Core::init(){
 
     glUseProgram(myShader->getUID());
 
-    renderer->addTexture("Resources/Assets/spritesheet.png");
+    renderer->addTexture("Resources/Assets/truffle_spritesheet.png");
     renderer->addTexture("Resources/Assets/grass_jpg.jpg");
     renderer->addTexture("Resources/Assets/dirt.png");
     renderer->addTexture("Resources/Assets/landscape_mountains.png");
@@ -93,7 +93,7 @@ void Core::render(){
 
     glUniform1f(glGetUniformLocation(myShader->getUID(), "u_time"), glfwGetTime());
 
-    //renderer->draw();
+    renderer->draw();
 
     // static
     static bool oneTime = true;

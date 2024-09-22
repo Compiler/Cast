@@ -14,6 +14,7 @@ OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o Cast/Rendering/DynamicRenderer.o Cast/Rend
 
 main: $(OBJECTS) $(BIN_DIR)/$(EXE_NAME)
 	@echo "Executable size: $(shell ls -lh $(BIN_DIR)/$(EXE_NAME) | awk '{print $$5}')"
+	ar crf castengine.a $(OBJECTS)
 	./$(BIN_DIR)/$(EXE_NAME)
 
 
