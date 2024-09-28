@@ -17,8 +17,8 @@ namespace Cast{
     };
 
     struct Texture{
-        glm::vec2 position;
-        glm::vec2 dimensions;
+        glm::vec2 position = {0, 0};
+        glm::vec2 dimensions = {1, 1};
         float id;
         std::string filepath;
     };

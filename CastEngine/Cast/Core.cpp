@@ -39,13 +39,19 @@ int Core::init(){
     auto entity = ecs_registry.create();
 
     auto transform = ecs_registry.emplace<Transform>(entity);
-    ecs_registry.emplace<Renderable>(entity);
-    
-    transform.position.x = 500;
-    transform.position.y = 500;
+    auto texture = ecs_registry.emplace<Texture>(entity);
+    texture.position = {0,0};
+    texture.dimensions = {1,1};
+    texture.id = 1;
+    auto renderable = ecs_registry.emplace<Renderable>(entity);
+    renderable.color.r = 0.54;
+    transform.position.x = 0;
+    transform.position.y = 100;
+    transform.dimensions.x = 100;
+    transform.dimensions.y = 100;
 
     for(auto&& [entity, trans, rend] : ecs_registry.view<Transform, Renderable>().each()){
-        //renderer->addRectangle(trans.position.x, trans.position.y, 50, 50, -1);
+        renderer->addRectangle(trans.position.x, trans.position.y, 50, 50, -1);
     }
     myShader->addShader(GL_VERTEX_SHADER, "Resources/Shaders/passthrough.vert");
     myShader->addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/passthrough.frag");
@@ -74,6 +80,7 @@ int Core::init(){
 void Core::update(){
     myY -= 0.00998 / frameTimeMs;
     if(myY < 300 + 50) myY = 300 + 50;
+    dyRenderer->update();
 }
 void Core::render(){
     CHECK_GL_ERROR();
@@ -92,13 +99,17 @@ void Core::render(){
 
     glUniform1f(glGetUniformLocation(myShader->getUID(), "u_time"), glfwGetTime());
 
-    renderer->draw();
+    //renderer->draw();
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-    //dyRenderer->render();
+    dyRenderer->render();
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
 
 
     // Check and proc events, swap render buffers
