@@ -12,6 +12,10 @@ namespace Cast{
         glm::vec4 rotation;
     };
 
+    struct Named{
+        std::string entityName;
+    };
+
     struct Point{
         float x, y, z;
     };
@@ -33,15 +37,6 @@ namespace Cast{
         std::vector<Vertex> vertices;
     };
 
-    struct Triangle{
-        Vertex v1, v2, v3;
-    };
-
-    struct Rectangle{
-        Vertex v1, v2, v3;
-    };
-
-    
     struct Renderable{
         glm::vec4 color;
         // Enum shape

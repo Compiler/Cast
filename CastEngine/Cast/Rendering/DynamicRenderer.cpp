@@ -9,6 +9,7 @@ DynamicRenderer::DynamicRenderer(){
 
     glGenBuffers(1, &_vbo);
     glGenBuffers(1, &_ebo);
+    unbind();
 
 }
 
@@ -22,6 +23,7 @@ void DynamicRenderer::addRectangle(const glm::vec4& position, const glm::vec4& d
     const float& textureID = texture.id;
 
     
+    // Vertex is a struct with 3 glm::vec4s with position, color, textureData as member names
     Cast::Vertex v1 = {{position.x, position.y, position.z, 1.0f},                              color, {texturePosition.x, texturePosition.y + textureDimensions.y, textureID, 0.0f}}; // 0 1
     Cast::Vertex v2 = {{position.x + dimensions.x, position.y,position.z,  1.0f},               color, {texturePosition.x + textureDimensions.x, texturePosition.y + textureDimensions.y, textureID, 0.0f}}; // 1 1
     Cast::Vertex v3 = {{position.x + dimensions.x, position.y - dimensions.y,position.z,  1.0f},color, {texturePosition.x + textureDimensions.x, texturePosition.y, textureID, 0.0f}}; // 1 0
@@ -42,16 +44,12 @@ void DynamicRenderer::update() {
 void DynamicRenderer::render() {
     glBindVertexArray(_vao);
 
-    static int count = 0;
-    if(count-- == 0){
-    std::cout << "DynamicRenderer rendering " << _indexBuffer.size() / 4 << " objects.\n";
-    count = 144;
-    }
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, _buffer.size() * sizeof(decltype(_buffer.front())), _buffer.data(), GL_DYNAMIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer.size() * sizeof(unsigned int), _indexBuffer.data(), GL_DYNAMIC_DRAW);
+
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Cast::Vertex), (void*)offsetof(Cast::Vertex, position));
     glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Cast::Vertex), (void*)offsetof(Cast::Vertex, color));
     glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Cast::Vertex), (void*)offsetof(Cast::Vertex, textureData));
@@ -61,10 +59,15 @@ void DynamicRenderer::render() {
 
 
     glDrawElements(GL_TRIANGLES, _indexBuffer.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+    unbind();
+
     _buffer.clear();
     _indexBuffer.clear();
 }
 
+void DynamicRenderer::unbind(){
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}

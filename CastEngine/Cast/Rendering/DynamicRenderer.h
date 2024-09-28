@@ -17,6 +17,8 @@ class DynamicRenderer{
         void addRectangle(const glm::vec4& position, const glm::vec4& dimensions, const glm::vec4& color, Cast::Texture& texture);
         void update();
         void render();
+
+        void unbind();
         inline unsigned int numArrays() const { return _indexBuffer.size(); }
 
 };

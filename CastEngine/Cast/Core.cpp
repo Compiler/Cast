@@ -38,17 +38,19 @@ int Core::init(){
 
     auto entity = ecs_registry.create();
 
-    auto transform = ecs_registry.emplace<Transform>(entity);
-    auto texture = ecs_registry.emplace<Texture>(entity);
+    auto& transform = ecs_registry.emplace<Transform>(entity);
+    auto& texture = ecs_registry.emplace<Texture>(entity);
     texture.position = {0,0};
     texture.dimensions = {1,1};
     texture.id = 1;
-    auto renderable = ecs_registry.emplace<Renderable>(entity);
+    auto& renderable = ecs_registry.emplace<Renderable>(entity);
+    auto& label = ecs_registry.emplace<Named>(entity);
+    label.entityName = "Player";
     renderable.color.r = 0.54;
     transform.position.x = 0;
-    transform.position.y = 100;
-    transform.dimensions.x = 100;
-    transform.dimensions.y = 100;
+    transform.position.y = 350;
+    transform.dimensions.x = 50;
+    transform.dimensions.y = 50;
 
     for(auto&& [entity, trans, rend] : ecs_registry.view<Transform, Renderable>().each()){
         renderer->addRectangle(trans.position.x, trans.position.y, 50, 50, -1);
@@ -80,6 +82,12 @@ int Core::init(){
 void Core::update(){
     myY -= 0.00998 / frameTimeMs;
     if(myY < 300 + 50) myY = 300 + 50;
+    for(auto&& [entity, trans, rend, named] : ecs_registry.view<Transform, Renderable, Named>().each()){
+        if(named.entityName == std::string("Player")){
+           trans.position.y = myY; 
+           trans.position.x = myX; 
+       }
+    }
     dyRenderer->update();
 }
 void Core::render(){
@@ -99,7 +107,7 @@ void Core::render(){
 
     glUniform1f(glGetUniformLocation(myShader->getUID(), "u_time"), glfwGetTime());
 
-    //renderer->draw();
+    renderer->draw();
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
