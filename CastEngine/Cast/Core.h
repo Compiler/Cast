@@ -31,6 +31,7 @@
 #include <iostream>
 #include <entt/entt.hpp>
 #include <Cast/ECS/BasicComponents.h>
+#include <Cast/ECS/BasicSystems.h>
 
 using namespace Cast;
 

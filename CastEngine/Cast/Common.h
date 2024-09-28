@@ -5,7 +5,7 @@
 #define CHECK_GL_ERROR() Cast::CHECK_FOR_ERROR(__FILE__, __LINE__)
 namespace Cast{
 
-        // Global variable
+    // Global variable
     inline entt::registry ecs_registry;
     extern float frameTimeMs;
 

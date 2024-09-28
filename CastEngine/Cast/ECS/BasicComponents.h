@@ -42,4 +42,9 @@ namespace Cast{
         // Enum shape
     };
 
+    struct Collidable{
+        unsigned short bitmask;
+        bool isColliding;
+    };
+
 }

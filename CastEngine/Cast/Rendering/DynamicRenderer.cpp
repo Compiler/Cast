@@ -32,17 +32,30 @@ void DynamicRenderer::addRectangle(const glm::vec4& position, const glm::vec4& d
     _buffer.push_back(v1);_buffer.push_back(v2);_buffer.push_back(v3);_buffer.push_back(v4);
 
     for (size_t i = 0; i < indexTemplate.size(); ++i) {
-        _indexBuffer.push_back(n * vertices + indexTemplate[i]);
+        _indexBuffer.push_back(_buffer.size() / 4 * vertices + indexTemplate[i]);
     }
 }
 
 void DynamicRenderer::update() {
-    for(auto&& [entity, trans, texture, rend] : Cast::ecs_registry.view<Cast::Transform, Cast::Texture, Cast::Renderable>().each()){
+    for(auto&& [entity, trans, texture, rend, col] : Cast::ecs_registry.view<Cast::Transform, Cast::Texture, Cast::Renderable, Cast::Collidable>().each()){
         addRectangle(trans.position, trans.dimensions, rend.color, texture);;
     }
 }
 void DynamicRenderer::render() {
     glBindVertexArray(_vao);
+
+    static int count = 0;
+    if(count-- == 0){
+        std::cout << "DynamicRenderer :: Vertex length: " << sizeof(Cast::Vertex) << " Offset of each prop: " << offsetof(Cast::Vertex, position) << " " << offsetof(Cast::Vertex, color) << " " << offsetof(Cast::Vertex, textureData) << "\n";
+        std::cout << "DynamicRenderer :: Binding a buffer of size: " << _buffer.size() * sizeof(decltype(_buffer.front())) << "\n";
+        std::cout << "DynamicRenderer :: Binding an index buffer of size: " << _indexBuffer.size() * sizeof(unsigned int) <<" bytes and " << _indexBuffer.size() << " indices and " << _indexBuffer.size() / 4 << " rectangles!\n";
+        std::cout << "DynamicRenderer rendering " << _indexBuffer.size() / 4 << " objects.\n";
+        for(int i = 0; i < _buffer.size() / 4; i++){
+            std::cout << "Rectangle " << i << " @ " << _buffer[i*4].position.x << ", " << _buffer[i*4].position.y << "\n";
+        }
+        count = 144;
+    }
+
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, _buffer.size() * sizeof(decltype(_buffer.front())), _buffer.data(), GL_DYNAMIC_DRAW);

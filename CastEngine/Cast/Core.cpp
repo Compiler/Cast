@@ -1,6 +1,7 @@
 #include "Core.h"
 #include "Common.h"
 #include "ECS/BasicComponents.h"
+#include "ECS/BasicSystems.h"
 #include "Rendering/DynamicRenderer.h"
 #include "Rendering/StaticRenderer.h"
 #include <algorithm>
@@ -36,22 +37,41 @@ int Core::init(){
     renderer->addRectangle(100, 500 + 100, 100, 100, (count++) % 4);
     //ENTT
 
-    auto entity = ecs_registry.create();
-
-    auto& transform = ecs_registry.emplace<Transform>(entity);
-    auto& texture = ecs_registry.emplace<Texture>(entity);
-    texture.position = {0,0};
-    texture.dimensions = {1,1};
-    texture.id = 1;
-    auto& renderable = ecs_registry.emplace<Renderable>(entity);
-    auto& label = ecs_registry.emplace<Named>(entity);
-    label.entityName = "Player";
-    renderable.color.r = 0.54;
-    transform.position.x = 0;
-    transform.position.y = 350;
-    transform.dimensions.x = 50;
-    transform.dimensions.y = 50;
-
+    {
+        auto entity = ecs_registry.create();
+        auto& transform = ecs_registry.emplace<Transform>(entity);
+        auto& texture = ecs_registry.emplace<Texture>(entity);
+        texture.position = {0,0};
+        texture.dimensions = {1,1};
+        texture.id = 1;
+        auto& renderable = ecs_registry.emplace<Renderable>(entity);
+        auto& label = ecs_registry.emplace<Named>(entity);
+        ecs_registry.emplace<Collidable>(entity);
+        label.entityName = "Player";
+        renderable.color.r = 0.54;
+        transform.position.x = 0;
+        transform.position.y = 350;
+        transform.dimensions.x = 50;
+        transform.dimensions.y = 50;
+    }
+    {
+        auto entity = ecs_registry.create();
+        auto& transform = ecs_registry.emplace<Transform>(entity);
+        auto& texture = ecs_registry.emplace<Texture>(entity);
+        texture.position = {0,0};
+        texture.dimensions = {1,1};
+        texture.id = 1;
+        auto& renderable = ecs_registry.emplace<Renderable>(entity);
+        auto& label = ecs_registry.emplace<Named>(entity);
+        ecs_registry.emplace<Collidable>(entity);
+        label.entityName = "Player2";
+        renderable.color.r = 0.54;
+        transform.position.x = 100;
+        transform.position.y = 350;
+        transform.dimensions.x = 50;
+        transform.dimensions.y = 50;
+    }
+    
     for(auto&& [entity, trans, rend] : ecs_registry.view<Transform, Renderable>().each()){
         renderer->addRectangle(trans.position.x, trans.position.y, 50, 50, -1);
     }
@@ -80,12 +100,25 @@ int Core::init(){
 
 
 void Core::update(){
-    myY -= 0.00998 / frameTimeMs;
+
+    // Reset collision flags
+    auto view = ecs_registry.view<Cast::Collidable>();
+    static int count = 0;
+    if(count-- <= 0){
+        for (auto entity : view) {
+            std::cout << "Entity " << static_cast<uint32_t>(entity) << ": " << view.get<Collidable>(entity).isColliding << "\n";
+        }
+        count = 144;
+    }
+    collisionSystem(ecs_registry);
+    myY -= 0.998 / frameTimeMs;
     if(myY < 300 + 50) myY = 300 + 50;
-    for(auto&& [entity, trans, rend, named] : ecs_registry.view<Transform, Renderable, Named>().each()){
+    for(auto&& [entity, trans, rend, named, coll] : ecs_registry.view<Transform, Renderable, Named, Collidable>().each()){
         if(named.entityName == std::string("Player")){
+            if(!coll.isColliding){
            trans.position.y = myY; 
            trans.position.x = myX; 
+            }
        }
     }
     dyRenderer->update();
