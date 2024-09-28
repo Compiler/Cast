@@ -1,40 +1,50 @@
 #pragma once
 #include <string>
 #include <glm/vec4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec2.hpp>
 #include <vector>
 namespace Cast{
     
     struct Transform{
         glm::vec4 position;
+        glm::vec4 dimensions;
         glm::vec4 rotation;
-    };
-
-    struct Polygon{
-        std::vector<glm::vec4> vertices;
     };
 
     struct Point{
         float x, y, z;
     };
 
+    struct Texture{
+        glm::vec2 position;
+        glm::vec2 dimensions;
+        float id;
+        std::string filepath;
+    };
+
     struct Vertex{
-        Point position;
-        Point color;
-        Point textureCoordinates;
+        glm::vec4 position;
+        glm::vec4 color;
+        glm::vec4 textureData; //s, t, id
+    };
+
+    struct Polygon{
+        std::vector<Vertex> vertices;
     };
 
     struct Triangle{
         Vertex v1, v2, v3;
     };
 
-
-    struct Texture{
-        float s, t, id;
-        std::string filepath;
+    struct Rectangle{
+        Vertex v1, v2, v3;
     };
+
     
     struct Renderable{
         glm::vec4 color;
+        // Enum shape
     };
 
 }

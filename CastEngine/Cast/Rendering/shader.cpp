@@ -22,25 +22,30 @@ void Shader::addShader(unsigned int type, std::string filepath){
     }
 }
 
-void Shader::compile(){
+
+void Shader::compile() {
     _uid = glCreateProgram();
 
-    for(auto shader : _shaders) glAttachShader(_uid, shader);
+    for (auto shader : _shaders) glAttachShader(_uid, shader);
 
     glLinkProgram(_uid);
-    
-    for(auto shader : _shaders) glDeleteShader(shader);
+    CHECK_GL_ERROR();
 
-    // Check for success
+    for (auto shader : _shaders) glDeleteShader(shader);
+
     int success;
     char infoLogShader[512];
-    glGetShaderiv(_uid, GL_LINK_STATUS, &success);
-    if(!success){
-        glGetShaderInfoLog(_uid, 512, NULL, infoLogShader);
+    glGetProgramiv(_uid, GL_LINK_STATUS, &success);  
+    if (!success) {
+        glGetProgramInfoLog(_uid, 512, NULL, infoLogShader);
         std::cerr << "ShaderError::ShaderProgram::LinkFailed\t" << infoLogShader << std::endl;
-    }else std::cout << "Shader::Program compiled successfully\n";
+    } else {
+        std::cout << "Shader::Program compiled successfully\n";
+    }
 
+    CHECK_GL_ERROR();
 }
+
 
 
 std::string Shader::_glTypeToString(unsigned int type){

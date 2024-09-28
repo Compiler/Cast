@@ -1,5 +1,6 @@
 
 #include "DynamicRenderer.h"
+#include "ECS/BasicComponents.h"
 
 DynamicRenderer::DynamicRenderer(){
 
@@ -11,15 +12,20 @@ DynamicRenderer::DynamicRenderer(){
 
 }
 
-void DynamicRenderer::addRectangle(std::string name, float x, float y, float width, float height, float textureID) {
+void DynamicRenderer::addRectangle(const glm::vec4& position, const glm::vec4& dimensions, const glm::vec4& color, Cast::Texture& texture) {
     static std::vector<int> indexTemplate = {0, 1, 3, 1, 2, 3};
     static int n = 0;
     static int vertices = 4;
 
-    Cast::Vertex v1 = {{x, y, 1.0f},                    {1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, textureID}};
-    Cast::Vertex v2 = {{x + width, y, 1.0f},            {0.0f, 1.0f, 1.0f}, {1.0f, 1.0f, textureID}};
-    Cast::Vertex v3 = {{x + width, y - height, 1.0f},   {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, textureID}};
-    Cast::Vertex v4 = {{x, y - height, 1.0f},           {1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, textureID}};
+    const glm::vec2& texturePosition = texture.position;
+    const glm::vec2& textureDimensions = texture.dimensions;
+    const float& textureID = texture.id;
+
+    
+    Cast::Vertex v1 = {{position.x, position.y, position.z, 1.0f},                              color, {texturePosition.x, texturePosition.y + textureDimensions.y, textureID, 0.0f}}; // 0 1
+    Cast::Vertex v2 = {{position.x + dimensions.x, position.y,position.z,  1.0f},               color, {texturePosition.x + textureDimensions.x, texturePosition.y + textureDimensions.y, textureID, 0.0f}}; // 1 1
+    Cast::Vertex v3 = {{position.x + dimensions.x, position.y - dimensions.y,position.z,  1.0f},color, {texturePosition.x + textureDimensions.x, texturePosition.y, textureID, 0.0f}}; // 1 0
+    Cast::Vertex v4 = {{position.x, position.y - dimensions.y,position.z,  1.0f},               color, {texturePosition.x, texturePosition.y, textureID, 0.0f}}; // 0 0
 
     _buffer.push_back(v1);_buffer.push_back(v2);_buffer.push_back(v3);_buffer.push_back(v4);
 
@@ -28,7 +34,12 @@ void DynamicRenderer::addRectangle(std::string name, float x, float y, float wid
     }
 }
 
-void DynamicRenderer::draw() {
+void DynamicRenderer::update() {
+    for(auto&& [entity, trans, texture, rend] : Cast::ecs_registry.view<Cast::Transform, Cast::Texture, Cast::Renderable>().each()){
+        addRectangle(trans.position, trans.dimensions, rend.color, texture);;
+    }
+}
+void DynamicRenderer::render() {
     glBindVertexArray(_vao);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
