@@ -60,7 +60,7 @@ int Core::init(){
         auto& texture = ecs_registry.emplace<Texture>(entity);
         texture.position = {0,0};
         texture.dimensions = {1,1};
-        texture.id = 1;
+        texture.id = 2;
         auto& renderable = ecs_registry.emplace<Renderable>(entity);
         auto& label = ecs_registry.emplace<Named>(entity);
         ecs_registry.emplace<Collidable>(entity);

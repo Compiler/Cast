@@ -15,12 +15,10 @@ inline void collisionSystem(entt::registry& registry){
     using namespace Cast;
     auto view = registry.view<Cast::Transform, Cast::Collidable>();
 
-    // Reset collision flags
     for (auto entity : view) {
         view.get<Collidable>(entity).isColliding = false;
     }
 
-    // Iterate over all pairs of entities and check for collisions
     for (auto entityA : view) {
         const auto& transformA = view.get<Transform>(entityA);
 
@@ -30,7 +28,6 @@ inline void collisionSystem(entt::registry& registry){
             const auto& transformB = view.get<Transform>(entityB);
 
             if (checkAABBCollision(transformA, transformB)) {
-                // Mark both entities as colliding
                 view.get<Collidable>(entityA).isColliding = true;
                 view.get<Collidable>(entityB).isColliding = true;
             }
