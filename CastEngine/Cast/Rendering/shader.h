@@ -1,4 +1,6 @@
+#pragma once
 #include <glad/glad.h>
+#include <Cast/Common.h>
 #include <Cast/Utilities/ResourceManager.h>
 #include <vector>
 class Shader{

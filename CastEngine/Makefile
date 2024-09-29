@@ -2,7 +2,7 @@ CC= g++
 INCLUDE=-I include/ -I . -I Cast/ -I include/stb_image/ 
 
 # Linux compilation 
-LIBRARIES =-L lib/ -lglfw -lGL -lbox2d
+LIBRARIES =-L lib/ -lglfw -lGL -lbox2d -lfmt
 CFLAGS =-Wall -Wextra -g -std=c++20 $(INCLUDE) 
 
 EXE_NAME=CastEngine
@@ -10,10 +10,11 @@ EXE_NAME=CastEngine
 GLAD_ROOT=include/glad_root
 BIN_DIR=bin
 
-OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o Cast/Rendering/DynamicRenderer.o Cast/Rendering/StaticRenderer.o Cast/Rendering/shader.o
+OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o Cast/Rendering/DynamicRenderer.o Cast/Rendering/StaticRenderer.o Cast/Rendering/Shader.o
 
 main: $(OBJECTS) $(BIN_DIR)/$(EXE_NAME)
 	@echo "Executable size: $(shell ls -lh $(BIN_DIR)/$(EXE_NAME) | awk '{print $$5}')"
+	ar crf castengine.a $(OBJECTS)
 	./$(BIN_DIR)/$(EXE_NAME)
 
 

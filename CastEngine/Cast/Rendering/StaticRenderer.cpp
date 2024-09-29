@@ -20,14 +20,18 @@ void StaticRenderer::preDraw(){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexBuffer.size() * sizeof(int), _indexBuffer.data(), GL_STATIC_DRAW);
 
+    std::cout << "Vertex length: " << sizeof(Cast::Vertex) << " Offset of each prop: " << offsetof(Cast::Vertex, position) << " " << offsetof(Cast::Vertex, color) << " " << offsetof(Cast::Vertex, textureData) << "\n";
+    std::cout << "Binding a buffer of size: " << _buffer.size() * sizeof(decltype(_buffer.front())) << "\n";
+    std::cout << "Binding an index buffer of size: " << _indexBuffer.size() * sizeof(unsigned int) <<" bytes and " << _indexBuffer.size() << " indices and " << _indexBuffer.size() / 4 << " rectangles!\n";
 
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(3 * sizeof(float)));
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(float), (void*)(6 * sizeof(float)));
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, sizeof(Cast::Vertex), (void*)offsetof(Cast::Vertex, position));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Cast::Vertex), (void*)offsetof(Cast::Vertex, color));
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Cast::Vertex), (void*)offsetof(Cast::Vertex, textureData));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
+    std::cout << "PreDraw :: Static rendering " << _indexBuffer.size() << " indices or " << _indexBuffer.size() / 4 << " Rectangles\n";
 
 }
 
@@ -38,10 +42,10 @@ void StaticRenderer::addRectangle(float x, float y, float width, float height, f
     static int n = 0;
 
 
-    Cast::Vertex v1 = {x, y, 1.0f,                    1.0f, 1.0f, 1.0f,       0.0f, 1.0f, textureID};
-    Cast::Vertex v2 = {x + width, y, 1.0f,            1.0f, 1.0f, 1.0f,       1.0f, 1.0f, textureID};
-    Cast::Vertex v3 = {x + width, y - height, 1.0f,   1.0f, 1.0f, 1.0f,       1.0f, 0.0f, textureID};
-    Cast::Vertex v4 = {x, y - height, 1.0f,           1.0f, 1.0f, 1.0f,       0.0f, 0.0f, textureID};
+    Cast::Vertex v1 = {{x, y, 1.0f, 1.0f},                   {1.0f, 1.0f, 1.0f,1.0f},       {0.0f, 1.0f, textureID, 0.0f}};
+    Cast::Vertex v2 = {{x + width, y, 1.0f,1.0f},            {1.0f, 1.0f, 1.0f,1.0f},       {1.0f, 1.0f, textureID, 0.0f}};
+    Cast::Vertex v3 = {{x + width, y - height, 1.0f,1.0f},   {1.0f, 1.0f, 1.0f,1.0f},       {1.0f, 0.0f, textureID, 0.0f}};
+    Cast::Vertex v4 = {{x, y - height, 1.0f,1.0f},           {1.0f, 1.0f, 1.0f,1.0f},       {0.0f, 0.0f, textureID, 0.0f}};
     _buffer.push_back(v1);
     _buffer.push_back(v2);
     _buffer.push_back(v3);
@@ -58,10 +62,18 @@ void StaticRenderer::draw(){
 
         {GLenum err;while ((err = glGetError()) != GL_NO_ERROR)std::cerr << "SR60:OpenGL error: " << err << std::endl;}
     glBindVertexArray(_vao);
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glDrawElements(GL_TRIANGLES, _indexBuffer.size(), GL_UNSIGNED_INT, 0);
         {GLenum err;while ((err = glGetError()) != GL_NO_ERROR)std::cerr << "SR62:OpenGL error: " << err << std::endl;}
+        unbind();
 }
 
+void StaticRenderer::unbind(){
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
 bool StaticRenderer::addTexture(std::string filepath) {
     unsigned int texture;
     stbi_set_flip_vertically_on_load(true);   

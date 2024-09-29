@@ -34,7 +34,11 @@ int main() {
             frameLengths = 0;
             fpss = 0;
         }
-        std::this_thread::sleep_for(std::chrono::milliseconds((int)(1000 / targetFPS - frameTimeMs)));
+        // Ensure each frame contributes equal time
+        auto sleepDuration = (int)(1000 / targetFPS - frameTimeMs);
+        if(sleepDuration > 0){
+            std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
+        }
     }
     engineCore.shutdown();
 

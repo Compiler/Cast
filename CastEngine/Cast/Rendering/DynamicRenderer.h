@@ -1,9 +1,9 @@
 #pragma once
+#include <Cast/Common.h>
+#include <Cast/Cast.h>
 #include "../../include/glad/glad.h"
 #include <vector>
-#include <string>
 #include <Cast/ECS/BasicComponents.h>
-#include <iostream>
 class DynamicRenderer{
 
     private:
@@ -15,10 +15,11 @@ class DynamicRenderer{
     public:
 
         DynamicRenderer();
-        void addRectangle(std::string name, float x, float y, float width, float height, float textureID);
-        void draw();
-        void preDraw();
-        bool addTexture(std::string filePath);
+        void addRectangle(const glm::vec4& position, const glm::vec4& dimensions, const glm::vec4& color, Cast::Texture& texture);
+        void update();
+        void render();
+
+        void unbind();
         inline unsigned int numArrays() const { return _indexBuffer.size(); }
 
 };

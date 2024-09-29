@@ -3,6 +3,7 @@
 #define GLFW_INCLUDE_NONE
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include <Cast/Cast.h>
 #include <Cast/Common.h>
 
 #include <math.h>
@@ -31,6 +32,7 @@
 #include <iostream>
 #include <entt/entt.hpp>
 #include <Cast/ECS/BasicComponents.h>
+#include <Cast/ECS/BasicSystems.h>
 
 using namespace Cast;
 
@@ -62,10 +64,9 @@ class Core{
         DynamicRenderer* dyRenderer;
         Shader* myShader;    
         int _initEngineDependencies();
+        void generateEntity(float x, float y, float id, std::string name);
     public:
 
-        // Global variable
-        entt::registry registry;
         Core() {
             _initEngineDependencies();
             std::cout << "Created core object.";
