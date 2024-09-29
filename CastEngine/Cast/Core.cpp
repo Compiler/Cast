@@ -28,6 +28,7 @@ void Core::generateEntity(float x, float y, float id, std::string name){
 
 int Core::init(){
    
+    CAST_DEBUG("WHat is {} " , 3);
     renderer = new StaticRenderer();
     CHECK_GL_ERROR();
     dyRenderer = new DynamicRenderer();

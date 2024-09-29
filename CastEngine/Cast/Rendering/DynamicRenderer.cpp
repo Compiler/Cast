@@ -46,16 +46,10 @@ void DynamicRenderer::render() {
 
     static int count = 0;
     if(count-- == 0){
-        std::cout << "DynamicRenderer :: Vertex length: " << sizeof(Cast::Vertex) << " Offset of each prop: " << offsetof(Cast::Vertex, position) << " " << offsetof(Cast::Vertex, color) << " " << offsetof(Cast::Vertex, textureData) << "\n";
-        std::cout << "DynamicRenderer :: Binding a buffer of size: " << _buffer.size() * sizeof(decltype(_buffer.front())) << "\n";
-        std::cout << "DynamicRenderer :: Binding an index buffer of size: " << _indexBuffer.size() * sizeof(unsigned int) <<" bytes and " << _indexBuffer.size() << " indices and " << _indexBuffer.size() / 4 << " rectangles!\n";
-        std::cout << "DynamicRenderer rendering " << _indexBuffer.size() / 4 << " objects.\n";
-        for(int i = 0; i < _buffer.size() / 4; i++){
-            std::cout << "Rectangle " << i << " @ " << _buffer[i*4].position.x << ", " << _buffer[i*4].position.y << "\n";
-        }
-        std::cout << "Index buffer: [";
-        for(auto index : _indexBuffer) std::cout << index << ", ";
-        std::cout << "]\n";
+        CAST_LOG("Vertex length: {}, offset of each prop: {} {} {}", sizeof(Cast::Vertex), offsetof(Cast::Vertex, position), offsetof(Cast::Vertex, color), offsetof(Cast::Vertex, textureData));
+        CAST_LOG("Binding a buffer of size: {}", _buffer.size() * sizeof(decltype(_buffer.front())));
+        CAST_LOG("Binding an index buffer of size: {} bytes and {} indices", _indexBuffer.size() * sizeof(unsigned int), _indexBuffer.size());
+        CAST_LOG("Rendering {} objects.", _indexBuffer.size() / 4);
         count = 144;
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <Cast/Common.h>
+#include <Cast/Cast.h>
 #include "../../include/glad/glad.h"
 #include <vector>
 #include <Cast/ECS/BasicComponents.h>
