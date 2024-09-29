@@ -66,8 +66,14 @@ void StaticRenderer::draw(){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glDrawElements(GL_TRIANGLES, _indexBuffer.size(), GL_UNSIGNED_INT, 0);
         {GLenum err;while ((err = glGetError()) != GL_NO_ERROR)std::cerr << "SR62:OpenGL error: " << err << std::endl;}
+        unbind();
 }
 
+void StaticRenderer::unbind(){
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
 bool StaticRenderer::addTexture(std::string filepath) {
     unsigned int texture;
     stbi_set_flip_vertically_on_load(true);   

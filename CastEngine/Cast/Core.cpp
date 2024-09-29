@@ -4,12 +4,28 @@
 #include "ECS/BasicSystems.h"
 #include "Rendering/DynamicRenderer.h"
 #include "Rendering/StaticRenderer.h"
-#include <algorithm>
-#include <chrono>
 
-float Core::myX = 900;
-float Core::myY = 900;
+float Core::myX = 0;
+float Core::myY = 0;
 float Cast::frameTimeMs = 0;
+void Core::generateEntity(float x, float y, float id, std::string name){
+    auto entity = ecs_registry.create();
+    auto& transform = ecs_registry.emplace<Transform>(entity);
+    auto& texture = ecs_registry.emplace<Texture>(entity);
+    texture.position = {0,0};
+    texture.dimensions = {1,1};
+    texture.id = id;
+    auto& renderable = ecs_registry.emplace<Renderable>(entity);
+    auto& label = ecs_registry.emplace<Named>(entity);
+    ecs_registry.emplace<Collidable>(entity);
+    label.entityName = name;
+    renderable.color = {1, 1, 1, 1};
+    transform.position.x = x;
+    transform.position.y = y;
+    transform.dimensions.x = 50;
+    transform.dimensions.y = 50;
+}
+
 int Core::init(){
    
     renderer = new StaticRenderer();
@@ -36,41 +52,12 @@ int Core::init(){
     renderer->addRectangle(100, 500 + 200, 100, 100, (count++) % 4);
     renderer->addRectangle(100, 500 + 100, 100, 100, (count++) % 4);
     //ENTT
-
-    {
-        auto entity = ecs_registry.create();
-        auto& transform = ecs_registry.emplace<Transform>(entity);
-        auto& texture = ecs_registry.emplace<Texture>(entity);
-        texture.position = {0,0};
-        texture.dimensions = {1,1};
-        texture.id = 1;
-        auto& renderable = ecs_registry.emplace<Renderable>(entity);
-        auto& label = ecs_registry.emplace<Named>(entity);
-        ecs_registry.emplace<Collidable>(entity);
-        label.entityName = "Player";
-        renderable.color.r = 0.54;
-        transform.position.x = 0;
-        transform.position.y = 350;
-        transform.dimensions.x = 50;
-        transform.dimensions.y = 50;
-    }
-    {
-        auto entity = ecs_registry.create();
-        auto& transform = ecs_registry.emplace<Transform>(entity);
-        auto& texture = ecs_registry.emplace<Texture>(entity);
-        texture.position = {0,0};
-        texture.dimensions = {1,1};
-        texture.id = 2;
-        auto& renderable = ecs_registry.emplace<Renderable>(entity);
-        auto& label = ecs_registry.emplace<Named>(entity);
-        ecs_registry.emplace<Collidable>(entity);
-        label.entityName = "Player2";
-        renderable.color.r = 0.54;
-        transform.position.x = 100;
-        transform.position.y = 350;
-        transform.dimensions.x = 50;
-        transform.dimensions.y = 50;
-    }
+    myX = 900;
+    myY = 350;
+    this->generateEntity(900, 350, 3, "Player");
+    this->generateEntity(500, 350, 0, "Player2");
+    this->generateEntity(150, 350, 1, "Player4");
+    this->generateEntity(400, 350, 2, "Player3");
     
     for(auto&& [entity, trans, rend] : ecs_registry.view<Transform, Renderable>().each()){
         renderer->addRectangle(trans.position.x, trans.position.y, 50, 50, -1);
@@ -116,10 +103,10 @@ void Core::update(){
     for(auto&& [entity, trans, rend, named, coll] : ecs_registry.view<Transform, Renderable, Named, Collidable>().each()){
         if(named.entityName == std::string("Player")){
             if(!coll.isColliding){
-           trans.position.y = myY; 
-           trans.position.x = myX; 
+                trans.position.y = myY; 
+                trans.position.x = myX; 
             }
-       }
+        }
     }
     dyRenderer->update();
 }
@@ -142,15 +129,7 @@ void Core::render(){
 
     renderer->draw();
 
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
     dyRenderer->render();
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
 
 
     // Check and proc events, swap render buffers

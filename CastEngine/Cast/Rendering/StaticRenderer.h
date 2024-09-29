@@ -20,6 +20,7 @@ class StaticRenderer{
         void draw();
         void preDraw();
         bool addTexture(std::string filePath);
+        void unbind();
         inline unsigned int numArrays() const { return _indexBuffer.size(); }
 
 };

@@ -22,6 +22,9 @@ void DynamicRenderer::addRectangle(const glm::vec4& position, const glm::vec4& d
     const glm::vec2& textureDimensions = texture.dimensions;
     const float& textureID = texture.id;
 
+    for (size_t i = 0; i < indexTemplate.size(); ++i) {
+        _indexBuffer.push_back(_buffer.size() / 4 * vertices + indexTemplate[i]);
+    }
     
     // Vertex is a struct with 3 glm::vec4s with position, color, textureData as member names
     Cast::Vertex v1 = {{position.x, position.y, position.z, 1.0f},                              color, {texturePosition.x, texturePosition.y + textureDimensions.y, textureID, 0.0f}}; // 0 1
@@ -31,9 +34,6 @@ void DynamicRenderer::addRectangle(const glm::vec4& position, const glm::vec4& d
 
     _buffer.push_back(v1);_buffer.push_back(v2);_buffer.push_back(v3);_buffer.push_back(v4);
 
-    for (size_t i = 0; i < indexTemplate.size(); ++i) {
-        _indexBuffer.push_back(_buffer.size() / 4 * vertices + indexTemplate[i]);
-    }
 }
 
 void DynamicRenderer::update() {
@@ -53,6 +53,9 @@ void DynamicRenderer::render() {
         for(int i = 0; i < _buffer.size() / 4; i++){
             std::cout << "Rectangle " << i << " @ " << _buffer[i*4].position.x << ", " << _buffer[i*4].position.y << "\n";
         }
+        std::cout << "Index buffer: [";
+        for(auto index : _indexBuffer) std::cout << index << ", ";
+        std::cout << "]\n";
         count = 144;
     }
 
@@ -71,7 +74,7 @@ void DynamicRenderer::render() {
     glEnableVertexAttribArray(2);
 
 
-    glDrawElements(GL_TRIANGLES, _indexBuffer.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, _indexBuffer.size() * 2, GL_UNSIGNED_INT, 0);
 
     unbind();
 

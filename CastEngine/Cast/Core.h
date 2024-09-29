@@ -63,6 +63,7 @@ class Core{
         DynamicRenderer* dyRenderer;
         Shader* myShader;    
         int _initEngineDependencies();
+        void generateEntity(float x, float y, float id, std::string name);
     public:
 
         Core() {
