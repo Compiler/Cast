@@ -171,9 +171,5 @@ int Core::_initEngineDependencies(){
     glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
 
 
-
-   
     glDisable(GL_CULL_FACE);
- 
-
 }
