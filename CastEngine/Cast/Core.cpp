@@ -4,6 +4,8 @@
 #include "ECS/BasicSystems.h"
 #include "Rendering/DynamicRenderer.h"
 #include "Rendering/StaticRenderer.h"
+#include <bitset>
+#include <ostream>
 
 float Core::myX = 0;
 float Core::myY = 0;
@@ -94,7 +96,7 @@ void Core::update(){
     static int count = 0;
     if(count-- <= 0){
         for (auto entity : view) {
-            std::cout << "Entity " << static_cast<uint32_t>(entity) << ": " << view.get<Collidable>(entity).isColliding << "\n";
+            std::cout << "Entity " << static_cast<uint32_t>(entity) << ": " << view.get<Collidable>(entity).isColliding << " -> " << std::bitset<8>(view.get<Collidable>(entity).bitmask) << "\n";
         }
         count = 144;
     }
@@ -106,6 +108,19 @@ void Core::update(){
             if(!coll.isColliding){
                 trans.position.y = myY; 
                 trans.position.x = myX; 
+            }else{
+                auto bitset = std::bitset<8>(coll.bitmask);
+                if(bitset[COLLISION_BITS::LEFT]){
+                    trans.position.x = std::max(trans.position.x, myX);
+                }else if(bitset[COLLISION_BITS::RIGHT]){
+                    trans.position.x = std::min(trans.position.x, myX);
+                }else trans.position.x = myX;
+                if(bitset[COLLISION_BITS::TOP]){
+                    trans.position.y = std::max(trans.position.y, myY);
+                }else if(bitset[COLLISION_BITS::BOTTOM]){
+                    trans.position.y = std::min(trans.position.y, myY);
+                }else trans.position.y = myY;
+                //std::cout << "Entity " << named.entityName << " colliding: " << coll.bitmask << std::endl;
             }
         }
     }
