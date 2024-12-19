@@ -6,10 +6,19 @@
 #include "Rendering/StaticRenderer.h"
 #include <bitset>
 #include <ostream>
+#include <thread>
 
 float Core::myX = 0;
 float Core::myY = 0;
 float Cast::frameTimeMs = 0;
+void Core::glDebugOutput(GLenum source, GLenum type, GLuint id,
+                                  GLenum severity, GLsizei length,
+                                  const GLchar* message, const void* userParam) {
+    std::cerr << "OpenGL Debug Message:\n";
+    std::cerr << "Source: " << source << ", Type: " << type << ", ID: " << id << "\n";
+    std::cerr << "Severity: " << severity << "\n";
+    std::cerr << message << "\n";
+}
 void Core::generateEntity(float x, float y, float id, std::string name){
     auto entity = ecs_registry.create();
     auto& transform = ecs_registry.emplace<Transform>(entity);
@@ -163,7 +172,7 @@ int Core::_initEngineDependencies(){
         return -1;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_MINOR_VERSION);
 
     std::cout << "Done initializing GLFW\n";
     #ifdef CAST_MAC_OS 
@@ -201,4 +210,10 @@ int Core::_initEngineDependencies(){
         std::cout << "OpenGL error after glDisable(GL_CULL_FACE): " << err << std::endl;
     }
     //glDisable(GL_CULL_FACE);
+    std::cout << "End of initEngine\n";
+    std::this_thread::sleep_for(std::chrono::seconds(3));
+
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(Core::glDebugOutput, nullptr);
+    return 0;
 }

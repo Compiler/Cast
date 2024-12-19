@@ -39,6 +39,8 @@ using namespace Cast;
 class Core{
     private:
         GLFWwindow* _window;
+
+        static void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam); 
         static inline void framebuffer_size_callback(GLFWwindow* , int width, int height) {
             glViewport(0, 0, width, height);
         }
