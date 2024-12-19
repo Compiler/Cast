@@ -27,6 +27,7 @@ void Core::generateEntity(float x, float y, float id, std::string name){
 }
 
 int Core::init(){
+    if(_initEngineDependencies() != 0) return -1;
    
     CAST_DEBUG("WHat is {} " , 3);
     renderer = new StaticRenderer();
@@ -170,10 +171,6 @@ int Core::_initEngineDependencies(){
     }
     glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
 
-
-
-   
-    glDisable(GL_CULL_FACE);
- 
+    return 0;
 
 }

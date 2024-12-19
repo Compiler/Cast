@@ -68,7 +68,6 @@ class Core{
     public:
 
         Core() {
-            _initEngineDependencies();
             std::cout << "Created core object.";
         }
         int init();
