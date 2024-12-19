@@ -163,7 +163,7 @@ int Core::_initEngineDependencies(){
         return -1;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, OPENGL_MINOR_VERSION);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
     std::cout << "Done initializing GLFW\n";
     #ifdef CAST_MAC_OS 
@@ -185,6 +185,20 @@ int Core::_initEngineDependencies(){
     }
     glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
 
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    const GLubyte* version = glGetString(GL_VERSION);
 
-    glDisable(GL_CULL_FACE);
+    if (!renderer || !version) {
+        std::cerr << "Failed to retrieve OpenGL context information." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    std::cout << "Renderer: " << renderer << std::endl;
+    std::cout << "OpenGL Version: " << version << std::endl;
+
+    auto err = glGetError();
+    if (err != GL_NO_ERROR) {
+        std::cout << "OpenGL error after glDisable(GL_CULL_FACE): " << err << std::endl;
+    }
+    //glDisable(GL_CULL_FACE);
 }
