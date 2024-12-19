@@ -90,6 +90,7 @@ int Core::init(){
 
 
 void Core::update(){
+    std::cout << "Entered updated\n";
 
     // Reset collision flags
     auto view = ecs_registry.view<Cast::Collidable>();
@@ -163,7 +164,7 @@ int Core::_initEngineDependencies(){
         return -1;
     }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
     std::cout << "Done initializing GLFW\n";
     #ifdef CAST_MAC_OS 
@@ -183,6 +184,7 @@ int Core::_initEngineDependencies(){
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
+    std::cout << "Done initializing glad\n";
     glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
 
     const GLubyte* renderer = glGetString(GL_RENDERER);
@@ -200,5 +202,6 @@ int Core::_initEngineDependencies(){
     if (err != GL_NO_ERROR) {
         std::cout << "OpenGL error after glDisable(GL_CULL_FACE): " << err << std::endl;
     }
+    std::cout << "Done intializing\n";
     //glDisable(GL_CULL_FACE);
 }
