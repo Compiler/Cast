@@ -210,9 +210,6 @@ int Core::_initEngineDependencies(){
         std::cout << "OpenGL error after glDisable(GL_CULL_FACE): " << err << std::endl;
     }
     //glDisable(GL_CULL_FACE);
-    std::cout << "End of initEngine\n";
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-
     glEnable(GL_DEBUG_OUTPUT);
     glDebugMessageCallback(Core::glDebugOutput, nullptr);
     return 0;
