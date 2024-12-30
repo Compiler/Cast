@@ -6,7 +6,7 @@
 int main() {
     //Error is due to opengl stuff called before its ready.
     Core engineCore{};
-    engineCore.init();
+    if(!engineCore.init()) return -1;
     float targetFPS = 144;
     int frequency = targetFPS;
     float frameLengths;
