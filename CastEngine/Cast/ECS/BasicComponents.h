@@ -43,7 +43,7 @@ namespace Cast{
     };
 
     struct Collidable{
-        unsigned short bitmask;
+        uint8_t bitmask;
         bool isColliding;
     };
 
