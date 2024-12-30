@@ -3,4 +3,6 @@ desktop.ini
 *.cache*
 *compile_commands.json
 *.o
+castengine.a
+CastEngine/castengine.a
 *bin/
