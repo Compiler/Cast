@@ -33,12 +33,14 @@
 #include <entt/entt.hpp>
 #include <Cast/ECS/BasicComponents.h>
 #include <Cast/ECS/BasicSystems.h>
+#include <Cast/Scenes/DebugScene.h>
 
 using namespace Cast;
 
 class Core{
     private:
         GLFWwindow* _window;
+        DebugScene _debugScene;
 
         static void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam); 
         static inline void framebuffer_size_callback(GLFWwindow* , int width, int height) {
