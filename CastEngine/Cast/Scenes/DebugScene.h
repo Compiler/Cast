@@ -18,15 +18,9 @@
 #include <bitset>
 
 class DebugScene : public Scene {
+
     private:
-        entt::registry ecs_registry;
-        static float myX;
-        static float myY;
-        static inline void glfwErrorCallback(int error, const char* description) {
-            std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
-        }
-        StaticRenderer* renderer;
-        DynamicRenderer* dyRenderer;
+
         Shader* myShader;    
         void generateEntity(float x, float y, float id, std::string name);
 

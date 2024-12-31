@@ -36,3 +36,4 @@ clean:
 	rm -rf $(BIN_DIR)/* *.o
 	rm Cast/*.o
 	rm Cast/Rendering/*.o
+	rm Cast/Scenes/*.o

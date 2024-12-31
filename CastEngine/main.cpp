@@ -6,8 +6,8 @@
 int main() {
     //Error is due to opengl stuff called before its ready.
     Core engineCore{};
-    if(!engineCore.init()) return -1;
-    float targetFPS = 144;
+    if(engineCore.init() != 0) return -1;
+    float targetFPS = 250;
     int frequency = targetFPS;
     float frameLengths;
     float fpss;
@@ -40,6 +40,7 @@ int main() {
             std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
         }
     }
+    std::cout << "Should close hit\n";
     engineCore.shutdown();
 
     return 0;

@@ -25,7 +25,7 @@
 #ifdef CAST_WIN_OS
 #define OPENGL_MINOR_VERSION 6
 #else
-#define OPENGL_MINOR_VERSION 2
+#define OPENGL_MINOR_VERSION 6
 #endif
 #endif
 

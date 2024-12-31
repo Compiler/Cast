@@ -7,10 +7,6 @@ layout (location = 0) out vec4 FragColor;
 
 uniform float u_time;
 
-uniform sampler2D u_texture1;
-uniform sampler2D u_texture2;
-uniform sampler2D u_texture3;
-uniform sampler2D u_texture4;
 
 void main(){
 
@@ -18,16 +14,6 @@ void main(){
     //
     //FragColor = vec4(texture(u_texture1, oTexCoords).xyz * oColor, 1.0f); 
     vec4 col = vec4(oColor.rgb, 1.0f);
-    if(oTexCoords.z != -1){
-        if(oTexCoords.z == 0)
-            col = texture(u_texture1, oTexCoords.xy);
-        else if(oTexCoords.z == 1)
-            col = texture(u_texture2, oTexCoords.xy);
-        else if(oTexCoords.z == 2)
-            col = texture(u_texture3, oTexCoords.xy);
-        else 
-            col = texture(u_texture4, oTexCoords.xy);
-    }
 
     float dist = 1.0;
     float distFromTop = gl_FragCoord.y;

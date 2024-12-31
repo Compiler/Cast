@@ -24,16 +24,17 @@ void Core::glDebugOutput(GLenum source, GLenum type, GLuint id,
 
 int Core::init(){
     if(_initEngineDependencies() != 0) return -1;
+    CAST_LOG("{}", "Init\n");
    
     CHECK_GL_ERROR();
-
     _debugScene.init();
+    CHECK_GL_ERROR();
     return 0;
-
 }
 
 
 void Core::update(){
+    CHECK_GL_ERROR();
     _debugScene.update(frameTimeMs);
 }
 void Core::render(){
@@ -101,8 +102,16 @@ int Core::_initEngineDependencies(){
     if (err != GL_NO_ERROR) {
         std::cout << "OpenGL error after glDisable(GL_CULL_FACE): " << err << std::endl;
     }
-    //glDisable(GL_CULL_FACE);
-    glEnable(GL_DEBUG_OUTPUT);
-    glDebugMessageCallback(Core::glDebugOutput, nullptr);
+    if (GLAD_GL_VERSION_4_3) { // Debug output is supported in OpenGL 4.3 and above
+        glEnable(GL_DEBUG_OUTPUT);
+        glDebugMessageCallback(Core::glDebugOutput, nullptr);
+    } else {
+        std::cerr << "GL_DEBUG_OUTPUT not supported on this OpenGL version." << std::endl;
+    }
+
+    glDisable(GL_CULL_FACE);
+    glfwSwapInterval(0); // Disable vsync
+
+
     return 0;
 }
