@@ -15,13 +15,11 @@
 #include <Cast/ECS/BasicComponents.h>
 #include <Cast/ECS/BasicSystems.h>
 
-#include <bitset>
-
 class DebugScene : public Scene {
 
     private:
-
-        Shader* myShader;    
+        Shader* _shader;    
+        unsigned int _vao, _ebo;
         void generateEntity(float x, float y, float id, std::string name);
 
     public:
