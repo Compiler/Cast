@@ -23,12 +23,14 @@ int main() {
         float frameTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(delta).count() ;
         float frameTimeMcs = std::chrono::duration_cast<std::chrono::microseconds>(delta).count() ;
         float fps = 1000.0f / frameTimeMs;
+        int fpsPrecise = 1000000.0f / frameTimeMcs;
         engineCore.setDelta(frameTimeMs);
         frameLengths += frameTimeMs;
         fpss += fps;
         count ++;
         if(count == frequency){
-            std::cout << "Frame length: \t" << frameLengths / frequency << "ms\t(" << frameTimeMs << ") " << "ms\t Frame Length Micro: " << frameTimeMcs << std::endl;
+            std::cout << "Frame length MS: \t" << frameLengths / frequency << "ms\t(" << frameTimeMs << ") " << "ms" << std::endl;
+            std::cout << "Frame length McS: \t" << frameTimeMcs << "mcs (" << fpsPrecise << " fps )" << std::endl;
             std::cout << "FPS: \t\t" << std::round(fpss/frequency) << "\t(" << fps << ")" << std::endl;
             count = 1;
 
