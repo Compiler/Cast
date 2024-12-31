@@ -4,5 +4,6 @@ desktop.ini
 *compile_commands.json
 *.o
 castengine.a
+*castengine.a
 CastEngine/castengine.a
 *bin/
