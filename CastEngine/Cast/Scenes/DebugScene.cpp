@@ -92,6 +92,8 @@ void DebugScene::update(float delta){
 
 void DebugScene::render(float delta) {
     glUseProgram(_shader->getUID());
+    GLint location = glGetUniformLocation(_shader->getUID(), "u_time");
+    glUniform1f(location, glfwGetTime());
     glBindVertexArray(_vao);
     glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
