@@ -43,8 +43,8 @@ void Core::render(){
     processInput(_window);
 
     // Rendering commands
-    glClearColor(0.7, 0.5, 0.8, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.25, 0.25, 0.5, 1);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
     _debugScene.render(frameTimeMs);
@@ -110,6 +110,7 @@ int Core::_initEngineDependencies(){
     }
 
     glDisable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
     glfwSwapInterval(0); // Disable vsync
 
 
