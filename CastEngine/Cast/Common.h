@@ -9,6 +9,10 @@ namespace Cast{
     inline entt::registry ecs_registry;
     extern float frameTimeMs;
 
+    inline float window_width = 1920;
+    inline float window_height = 1080;
+
+
     inline void CHECK_FOR_ERROR(const char* file, int line) {
         GLenum err;
         while ((err = glGetError()) != GL_NO_ERROR) {

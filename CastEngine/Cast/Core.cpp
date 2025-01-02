@@ -72,7 +72,7 @@ int Core::_initEngineDependencies(){
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     #endif
 
-    _window = glfwCreateWindow(1920, 1080, "Cast", NULL, NULL);
+    _window = glfwCreateWindow(window_width, window_height, "Cast", NULL, NULL);
     if (!_window) {
         std::cerr << "Failed to create GLFW _window" << std::endl;
         glfwTerminate();

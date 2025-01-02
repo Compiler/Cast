@@ -45,6 +45,8 @@ class Core{
         static void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam); 
         static inline void framebuffer_size_callback(GLFWwindow* , int width, int height) {
             glViewport(0, 0, width, height);
+            window_width = width;
+            window_height = height;
         }
 
         static inline void processInput(GLFWwindow* window) {

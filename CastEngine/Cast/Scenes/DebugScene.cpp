@@ -19,14 +19,15 @@ bool DebugScene::init() {
     CAST_LOG("{}", "Returning from DebugScene::init");
     CHECK_GL_ERROR();
 
-    float vertices[] = {
-        -1, -1, 0.0f, 1.0f,     1.0f, 0.0f, 0.0f, 1.0f,     0, 0, 0.0f, 1.0f,
-        1, -1, 0.0f, 1.0f,      1.0f, 0.0f, 0.0f, 1.0f,     1, 0, 0.0f, 1.0f,
-        0, 1, 0.0f, 1.0f,         1.0f, 0.0f, 0.0f, 1.0f,   0.5, 0.5, 0.0f, 1.0f
+float vertices[] = {
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 1.0f, 0.0f, 0.0f,// top right
+         0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f, 0.0f,// bottom right
+        -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 0.0f, 0.0f, 0.0f,// bottom left
+        -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f, 0.0f// top left 
     };
-
-    int indices[] = {
-        0, 1, 2
+    unsigned int indices[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
     };
 
     glGenVertexArrays(1, &_vao);
@@ -86,13 +87,18 @@ bool DebugScene::init() {
 
 void DebugScene::update(float delta){
 
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, glm::radians(static_cast<float>(glm::sin(glfwGetTime()) * 180.0f)), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));     
-
-    glUseProgram(_shader->getUID());
-    GLint location = glGetUniformLocation(_shader->getUID(), "u_model");
-    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(trans));
+    glm::mat4 model         = glm::mat4(1.0f); 
+    glm::mat4 view          = glm::mat4(1.0f);
+    glm::mat4 projection    = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+    view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    projection = glm::perspective(glm::radians(45.0f), (float)Cast::window_width / (float)Cast::window_height, 0.1f, 100.0f);
+    unsigned int modelLoc = glGetUniformLocation(_shader->getUID(), "iModel");
+    unsigned int viewLoc  = glGetUniformLocation(_shader->getUID(), "iView");
+    unsigned int projLoc  = glGetUniformLocation(_shader->getUID(), "iProjection");
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 }
 
@@ -102,7 +108,7 @@ void DebugScene::render(float delta) {
     GLint location = glGetUniformLocation(_shader->getUID(), "u_time");
     glUniform1f(location, glfwGetTime());
     glBindVertexArray(_vao);
-    glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 }
 
