@@ -28,5 +28,5 @@ void main(){
 
     //dist = 1.0f; // reset it until we have logic for the shadowing
     //FragColor = vec4(col.xyz * dist, col.a);  
-    FragColor = vec4(mcol, 1.0) * vec4(texCol.xyz, col.a);  
+    FragColor = mix(vec4(mcol, 1.0), vec4(texCol.xyz, col.a), 0.8);  
 }

@@ -24,6 +24,7 @@ bool DebugScene::init() {
         1, -1, 0.0f, 1.0f,      1.0f, 0.0f, 0.0f, 1.0f,     1, 0, 0.0f, 1.0f,
         0, 1, 0.0f, 1.0f,         1.0f, 0.0f, 0.0f, 1.0f,   0.5, 0.5, 0.0f, 1.0f
     };
+
     int indices[] = {
         0, 1, 2
     };
@@ -85,7 +86,13 @@ bool DebugScene::init() {
 
 void DebugScene::update(float delta){
 
-    
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::rotate(trans, glm::radians(static_cast<float>(glm::sin(glfwGetTime()) * 180.0f)), glm::vec3(0.0, 0.0, 1.0));
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));     
+
+    glUseProgram(_shader->getUID());
+    GLint location = glGetUniformLocation(_shader->getUID(), "u_model");
+    glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(trans));
 
 }
 
