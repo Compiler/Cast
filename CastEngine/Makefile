@@ -10,13 +10,12 @@ EXE_NAME=CastEngine
 GLAD_ROOT=include/glad_root
 BIN_DIR=bin
 
-OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o Cast/Rendering/DynamicRenderer.o Cast/Rendering/StaticRenderer.o Cast/Rendering/Shader.o
+OBJECTS=$(BIN_DIR)/glad.o Cast/Core.o Cast/Rendering/DynamicRenderer.o Cast/Rendering/StaticRenderer.o Cast/Rendering/Shader.o Cast/Scenes/DebugScene.o
 
 main: $(OBJECTS) $(BIN_DIR)/$(EXE_NAME)
 	@echo "Executable size: $(shell ls -lh $(BIN_DIR)/$(EXE_NAME) | awk '{print $$5}')"
 	ar crf castengine.a $(OBJECTS)
 	./$(BIN_DIR)/$(EXE_NAME)
-
 
 %.o: %.cpp
 	@echo "Recompiling object files in Cast " $@ " " $^
@@ -37,3 +36,4 @@ clean:
 	rm -rf $(BIN_DIR)/* *.o
 	rm Cast/*.o
 	rm Cast/Rendering/*.o
+	rm Cast/Scenes/*.o

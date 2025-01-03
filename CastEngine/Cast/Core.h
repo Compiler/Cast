@@ -25,7 +25,7 @@
 #ifdef CAST_WIN_OS
 #define OPENGL_MINOR_VERSION 6
 #else
-#define OPENGL_MINOR_VERSION 2
+#define OPENGL_MINOR_VERSION 6
 #endif
 #endif
 
@@ -33,16 +33,19 @@
 #include <entt/entt.hpp>
 #include <Cast/ECS/BasicComponents.h>
 #include <Cast/ECS/BasicSystems.h>
+#include <Cast/Scenes/DebugScene.h>
 
 using namespace Cast;
 
 class Core{
     private:
-        GLFWwindow* _window;
+        DebugScene _debugScene;
 
         static void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam); 
         static inline void framebuffer_size_callback(GLFWwindow* , int width, int height) {
             glViewport(0, 0, width, height);
+            window_width = width;
+            window_height = height;
         }
 
         static inline void processInput(GLFWwindow* window) {
@@ -50,11 +53,6 @@ class Core{
                 glfwSetWindowShouldClose(window, true);
             if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, true);
-
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) Core::myY += 5 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) Core::myY -= 5 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) Core::myX += 5 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) Core::myX -= 5 / frameTimeMs;
         }
 
         static float myX;
@@ -62,9 +60,6 @@ class Core{
         static inline void glfwErrorCallback(int error, const char* description) {
             std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
         }
-        StaticRenderer* renderer;
-        DynamicRenderer* dyRenderer;
-        Shader* myShader;    
         int _initEngineDependencies();
         void generateEntity(float x, float y, float id, std::string name);
     public:
@@ -77,7 +72,10 @@ class Core{
         void render();
         int shutdown(){ glfwTerminate(); return 0;}
 
-        void setDelta(float& d){ Cast::frameTimeMs = d;}
-        inline GLFWwindow* getWindow() const { return _window; }
-        inline bool shouldClose() const { return glfwWindowShouldClose(_window); }
+        void setDelta(float& d, float& mcs){ 
+            Cast::frameTimeMs = mcs/1000.0;
+            Cast::frameTimeMcs = mcs;
+        }
+        inline GLFWwindow* getWindow() const { return Cast::window; }
+        inline bool shouldClose() const { return glfwWindowShouldClose(Cast::window); }
 };
