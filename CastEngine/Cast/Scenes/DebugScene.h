@@ -25,7 +25,7 @@ class DebugScene : public Scene {
         unsigned int _vao, _ebo;
         void generateEntity(float x, float y, float id, std::string name);
 
-        void procesInput(GLFWwindow *window);
+        void processInput(GLFWwindow *window);
         static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
         static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 

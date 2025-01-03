@@ -9,6 +9,7 @@ namespace Cast{
     // Global variable
     inline entt::registry ecs_registry;
     extern float frameTimeMs;
+    extern float frameTimeMcs;
 
     inline float window_width = 1920;
     inline float window_height = 1080;

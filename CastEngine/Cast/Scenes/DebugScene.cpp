@@ -130,6 +130,7 @@ bool DebugScene::init() {
 
 void DebugScene::update(float delta){
 
+    processInput(Cast::window);
 
 }
 
@@ -142,7 +143,7 @@ void DebugScene::render(float delta) {
     //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
     view  = _cam.GetViewMatrix();
-    projection = glm::perspective(glm::radians(45.0f), (float)Cast::window_width / (float)Cast::window_height, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(_cam.Zoom), (float)Cast::window_width / (float)Cast::window_height, 0.1f, 100.0f);
     unsigned int modelLoc = glGetUniformLocation(_shader->getUID(), "iModel");
     unsigned int viewLoc  = glGetUniformLocation(_shader->getUID(), "iView");
     unsigned int projLoc  = glGetUniformLocation(_shader->getUID(), "iProjection");
@@ -189,7 +190,7 @@ bool DebugScene::cleanup() {
 }
 
 
-void DebugScene::procesInput(GLFWwindow *window){
+void DebugScene::processInput(GLFWwindow *window){
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
@@ -205,8 +206,8 @@ void DebugScene::procesInput(GLFWwindow *window){
 }
 void DebugScene::mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
     static bool firstMouse = true;
-    static float lastX;
-    static float lastY;
+    static float lastX = 0;
+    static float lastY = 0;
     float xpos = static_cast<float>(xposIn);
     float ypos = static_cast<float>(yposIn);
 

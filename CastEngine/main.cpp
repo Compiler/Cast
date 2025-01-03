@@ -24,7 +24,7 @@ int main() {
         float frameTimeMcs = std::chrono::duration_cast<std::chrono::microseconds>(delta).count() ;
         float fps = 1000.0f / frameTimeMs;
         int fpsPrecise = 1000000.0f / frameTimeMcs;
-        engineCore.setDelta(frameTimeMs);
+        engineCore.setDelta(frameTimeMs, frameTimeMcs);
         frameLengths += frameTimeMs;
         fpss += fps;
         count ++;

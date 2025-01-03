@@ -12,6 +12,7 @@
 float Core::myX = 0;
 float Core::myY = 0;
 float Cast::frameTimeMs = 0;
+float Cast::frameTimeMcs = 0;
 GLFWwindow* Cast::window = nullptr;
 void Core::glDebugOutput(GLenum source, GLenum type, GLuint id,
                                   GLenum severity, GLsizei length,

@@ -72,7 +72,10 @@ class Core{
         void render();
         int shutdown(){ glfwTerminate(); return 0;}
 
-        void setDelta(float& d){ Cast::frameTimeMs = d;}
+        void setDelta(float& d, float& mcs){ 
+            Cast::frameTimeMs = mcs/1000.0;
+            Cast::frameTimeMcs = mcs;
+        }
         inline GLFWwindow* getWindow() const { return Cast::window; }
         inline bool shouldClose() const { return glfwWindowShouldClose(Cast::window); }
 };
