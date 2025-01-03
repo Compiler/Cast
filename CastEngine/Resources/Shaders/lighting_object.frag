@@ -17,9 +17,11 @@ void main(){
     vec3 norm = normalize(oNormal);
     vec3 lightDir = normalize(u_lightPos - oFragPos);
 
+    float angle = dot(norm, lightDir);
+    vec3 diffuse = angle * u_lightColor;
 
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = diff * u_lightColor;
+    //float diff = max(dot(norm, lightDir), 0.0);
+    //vec3 diffuse = diff * u_lightColor;
 
     vec3 result = (ambient +diffuse) * u_objectColor;
     FragColor = vec4(result, 1.0);
