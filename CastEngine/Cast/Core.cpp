@@ -12,6 +12,7 @@
 float Core::myX = 0;
 float Core::myY = 0;
 float Cast::frameTimeMs = 0;
+GLFWwindow* Cast::window = nullptr;
 void Core::glDebugOutput(GLenum source, GLenum type, GLuint id,
                                   GLenum severity, GLsizei length,
                                   const GLchar* message, const void* userParam) {
@@ -40,7 +41,7 @@ void Core::update(){
 void Core::render(){
     CHECK_GL_ERROR();
     // Pre process 
-    processInput(_window);
+    processInput(Cast::window);
 
     // Rendering commands
     glClearColor(0.25, 0.25, 0.5, 1);
@@ -51,7 +52,7 @@ void Core::render(){
 
 
     // Check and proc events, swap render buffers
-    glfwSwapBuffers(_window);
+    glfwSwapBuffers(Cast::window);
     glfwPollEvents();
 }
 
@@ -72,20 +73,20 @@ int Core::_initEngineDependencies(){
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     #endif
 
-    _window = glfwCreateWindow(window_width, window_height, "Cast", NULL, NULL);
-    if (!_window) {
-        std::cerr << "Failed to create GLFW _window" << std::endl;
+    Cast::window = glfwCreateWindow(window_width, window_height, "Cast", NULL, NULL);
+    if (!Cast::window) {
+        std::cerr << "Failed to create GLFW Cast::window" << std::endl;
         glfwTerminate();
         return -1;
     }
-    glfwMakeContextCurrent(_window);
+    glfwMakeContextCurrent(Cast::window);
 
     std::cout << "Done creating window\n";
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-    glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
+    glfwSetFramebufferSizeCallback(Cast::window, framebuffer_size_callback);
 
     const GLubyte* renderer = glGetString(GL_RENDERER);
     const GLubyte* version = glGetString(GL_VERSION);

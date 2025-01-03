@@ -1,6 +1,7 @@
 #pragma once
 #include <entt/entity/registry.hpp>
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <iostream>
 #define CHECK_GL_ERROR() Cast::CHECK_FOR_ERROR(__FILE__, __LINE__)
 namespace Cast{
@@ -11,6 +12,8 @@ namespace Cast{
 
     inline float window_width = 1920;
     inline float window_height = 1080;
+
+    extern GLFWwindow* window;
 
 
     inline void CHECK_FOR_ERROR(const char* file, int line) {

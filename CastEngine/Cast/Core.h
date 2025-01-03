@@ -39,7 +39,6 @@ using namespace Cast;
 
 class Core{
     private:
-        GLFWwindow* _window;
         DebugScene _debugScene;
 
         static void glDebugOutput(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam); 
@@ -74,6 +73,6 @@ class Core{
         int shutdown(){ glfwTerminate(); return 0;}
 
         void setDelta(float& d){ Cast::frameTimeMs = d;}
-        inline GLFWwindow* getWindow() const { return _window; }
-        inline bool shouldClose() const { return glfwWindowShouldClose(_window); }
+        inline GLFWwindow* getWindow() const { return Cast::window; }
+        inline bool shouldClose() const { return glfwWindowShouldClose(Cast::window); }
 };

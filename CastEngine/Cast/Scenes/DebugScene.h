@@ -20,10 +20,15 @@ class DebugScene : public Scene {
 
     private:
         
-        Cast::Camera _cam;
+        static Cast::Camera _cam;
         Shader* _shader;    
         unsigned int _vao, _ebo;
         void generateEntity(float x, float y, float id, std::string name);
+
+        void procesInput(GLFWwindow *window);
+        static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+        static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+
 
     public:
         bool init();

@@ -1,10 +1,20 @@
 #include "DebugScene.h"
+#include "Cameras/PerspectiveCamera.h"
 #include "Common.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include <include/stb_image/stb_image.h>
 
+Cast::Camera DebugScene::_cam{};
+
 bool DebugScene::init() {
+
+    glfwSetCursorPosCallback(Cast::window, mouse_callback);
+    glfwSetScrollCallback(Cast::window, scroll_callback);
+
+    // tell GLFW to capture our mouse
+    glfwSetInputMode(Cast::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 
     CAST_DEBUG("WHat is {} " , 3);
     CHECK_GL_ERROR();
@@ -123,7 +133,6 @@ void DebugScene::update(float delta){
 
 }
 
-
 void DebugScene::render(float delta) {
     glUseProgram(_shader->getUID());
 
@@ -178,3 +187,45 @@ bool DebugScene::cleanup() {
 
     return true;
 }
+
+
+void DebugScene::procesInput(GLFWwindow *window){
+
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        _cam.ProcessKeyboard(Cast::FORWARD, Cast::frameTimeMs);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        _cam.ProcessKeyboard(Cast::BACKWARD, Cast::frameTimeMs);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        _cam.ProcessKeyboard(Cast::LEFT, Cast::frameTimeMs);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        _cam.ProcessKeyboard(Cast::RIGHT, Cast::frameTimeMs);
+}
+void DebugScene::mouse_callback(GLFWwindow* window, double xposIn, double yposIn){
+    static bool firstMouse = true;
+    static float lastX;
+    static float lastY;
+    float xpos = static_cast<float>(xposIn);
+    float ypos = static_cast<float>(yposIn);
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    lastX = xpos;
+    lastY = ypos;
+
+    _cam.ProcessMouseMovement(xoffset, yoffset);
+}
+void DebugScene::scroll_callback(GLFWwindow* window, double xoffset, double yoffset){
+    _cam.ProcessMouseScroll(static_cast<float>(yoffset));
+}
+
