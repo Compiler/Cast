@@ -21,6 +21,7 @@ void Core::glDebugOutput(GLenum source, GLenum type, GLuint id,
     std::cerr << "Source: " << source << ", Type: " << type << ", ID: " << id << "\n";
     std::cerr << "Severity: " << severity << "\n";
     std::cerr << message << "\n";
+
 }
 
 
@@ -29,7 +30,8 @@ int Core::init(){
     CAST_LOG("{}", "Init\n");
    
     CHECK_GL_ERROR();
-    _debugScene.init();
+    _curScene = &_lightingScene;
+    _curScene->init();
     CHECK_GL_ERROR();
     return 0;
 }
@@ -37,7 +39,7 @@ int Core::init(){
 
 void Core::update(){
     CHECK_GL_ERROR();
-    _debugScene.update(frameTimeMs);
+    _curScene->update(frameTimeMs);
 }
 void Core::render(){
     CHECK_GL_ERROR();
@@ -45,11 +47,11 @@ void Core::render(){
     processInput(Cast::window);
 
     // Rendering commands
-    glClearColor(0.25, 0.25, 0.5, 1);
+    glClearColor(0.15, 0.15, 0.35, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    _debugScene.render(frameTimeMs);
+    _curScene->render(frameTimeMs);
 
 
     // Check and proc events, swap render buffers
