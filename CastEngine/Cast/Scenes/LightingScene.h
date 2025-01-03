@@ -24,7 +24,7 @@ class LightingScene : public Scene {
         static Cast::Camera _cam;
         Shader* _shader;    
         Shader _lightingShader;    
-        Cube cube;
+        Cube lightCube, objCube;
         unsigned int _vao, _ebo;
         unsigned int _lvao;
         void generateEntity(float x, float y, float id, std::string name);
