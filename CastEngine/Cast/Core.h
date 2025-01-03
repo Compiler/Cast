@@ -54,11 +54,6 @@ class Core{
                 glfwSetWindowShouldClose(window, true);
             if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
                 glfwSetWindowShouldClose(window, true);
-
-            if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) Core::myY += 5 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) Core::myY -= 5 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) Core::myX += 5 / frameTimeMs;
-            if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) Core::myX -= 5 / frameTimeMs;
         }
 
         static float myX;
@@ -66,9 +61,6 @@ class Core{
         static inline void glfwErrorCallback(int error, const char* description) {
             std::cerr << "GLFW Error (" << error << "): " << description << std::endl;
         }
-        StaticRenderer* renderer;
-        DynamicRenderer* dyRenderer;
-        Shader* myShader;    
         int _initEngineDependencies();
         void generateEntity(float x, float y, float id, std::string name);
     public:

@@ -132,7 +132,7 @@ void DebugScene::render(float delta) {
     glm::mat4 projection    = glm::mat4(1.0f);
     //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-    view  = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+    view  = _cam.GetViewMatrix();
     projection = glm::perspective(glm::radians(45.0f), (float)Cast::window_width / (float)Cast::window_height, 0.1f, 100.0f);
     unsigned int modelLoc = glGetUniformLocation(_shader->getUID(), "iModel");
     unsigned int viewLoc  = glGetUniformLocation(_shader->getUID(), "iView");

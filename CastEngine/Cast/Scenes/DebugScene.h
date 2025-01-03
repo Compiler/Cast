@@ -8,6 +8,7 @@
 #include <Cast/Rendering/Shader.h>
 #include <Cast/Rendering/StaticRenderer.h>
 #include <Cast/Rendering/DynamicRenderer.h>
+#include <Cast/Cameras/PerspectiveCamera.h>
 #include <box2d/box2d.h>
 #include <Cast/Scenes/Scene.h>
 
@@ -18,6 +19,8 @@
 class DebugScene : public Scene {
 
     private:
+        
+        Cast::Camera _cam;
         Shader* _shader;    
         unsigned int _vao, _ebo;
         void generateEntity(float x, float y, float id, std::string name);
