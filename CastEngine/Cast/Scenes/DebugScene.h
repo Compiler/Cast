@@ -8,7 +8,7 @@
 #include <Cast/Rendering/Shader.h>
 #include <Cast/Rendering/StaticRenderer.h>
 #include <Cast/Rendering/DynamicRenderer.h>
-#include <Cast/Cameras/PerspectiveCamera.h>
+#include <Cast/Cameras/FPSCamera.h>
 #include <box2d/box2d.h>
 #include <Cast/Scenes/Scene.h>
 

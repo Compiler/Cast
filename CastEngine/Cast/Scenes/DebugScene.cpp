@@ -1,5 +1,5 @@
 #include "DebugScene.h"
-#include "Cameras/PerspectiveCamera.h"
+#include "Cameras/FPSCamera.h"
 #include "Common.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/gtc/type_ptr.hpp"
