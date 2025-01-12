@@ -31,7 +31,7 @@ bool LightingScene::init() {
     CAST_LOG("{}", "Returning from LightingScene::init");
     CHECK_GL_ERROR();
 
-    objCube.setPosition({0.0, -1.5, -8});
+    objCube.setPosition({-1.0, -2.5, -15});
     std::vector<Vertex> vertices = objCube.getVertices();
 
     glGenVertexArrays(1, &_vao);
@@ -92,7 +92,7 @@ bool LightingScene::init() {
 
 
 
-    lightCube.setPosition({2.0, 1.0, -5.0});
+    lightCube.setPosition({0.0, 1.0, -5.0});
     auto lvertices = lightCube.getVertices();
     glGenVertexArrays(1, &_lvao);
     glBindVertexArray(_lvao);
@@ -133,7 +133,11 @@ void LightingScene::render(float delta) {
         glm::mat4 view          = glm::mat4(1.0f);
         glm::mat4 projection    = glm::mat4(1.0f);
         //model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        static float xOff = 0;
+        static float yOff = 0;
+        xOff += 0.05* glm::sin(glfwGetTime());
         model = glm::translate(model, objCube.getPosition());
+        model = glm::rotate(model, (float)(glfwGetTime()), glm::vec3(1, 1, 1));
         view  = _cam.GetViewMatrix();
         projection = glm::perspective(glm::radians(_cam.Zoom), (float)Cast::window_width / (float)Cast::window_height, 0.1f, 100.0f);
         unsigned int modelLoc = glGetUniformLocation(_shader->getUID(), "iModel");
@@ -151,10 +155,13 @@ void LightingScene::render(float delta) {
     auto objLocation = glGetUniformLocation(_shader->getUID(), "u_objectColor");
     auto lightLocation = glGetUniformLocation(_shader->getUID(), "u_lightColor");
     auto lightPosLocation = glGetUniformLocation(_shader->getUID(), "u_lightPos");
+    auto viewPosLocation = glGetUniformLocation(_shader->getUID(), "u_viewPos");
+
 
     glUniform3fv(objLocation, 1, glm::value_ptr(glm::vec3{1.0f, 0.5f, 0.31f}));
     glUniform3fv(lightLocation, 1, glm::value_ptr(glm::vec3{1, 1.0, 1.0}));
     glUniform3fv(lightPosLocation, 1, glm::value_ptr(lightCube.getPosition()));
+    glUniform3fv(viewPosLocation, 1, glm::value_ptr(_cam.Position));
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     //-----------------------

@@ -16,7 +16,7 @@ uniform mat4 iModel, iView, iProjection;
 void main(){
     oTexCoords = aTexCoords;
     oColor = aColor;
-    oNormal = aNormal.xyz;
+    oNormal = mat3(transpose(inverse(iModel))) * aNormal.xyz;
     oFragPos = vec3(iModel * aPos);
     gl_Position = iProjection * iView * iModel * aPos;
 }
