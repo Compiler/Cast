@@ -31,7 +31,7 @@ bool LightingScene::init() {
     CAST_LOG("{}", "Returning from LightingScene::init");
     CHECK_GL_ERROR();
 
-    objCube.setPosition({0.0, -0.5, -5});
+    objCube.setPosition({0.0, -1.5, -8});
     std::vector<Vertex> vertices = objCube.getVertices();
 
     glGenVertexArrays(1, &_vao);
@@ -92,7 +92,7 @@ bool LightingScene::init() {
 
 
 
-    lightCube.setPosition({2.0, 1.0, -7.0});
+    lightCube.setPosition({2.0, 1.0, -5.0});
     auto lvertices = lightCube.getVertices();
     glGenVertexArrays(1, &_lvao);
     glBindVertexArray(_lvao);
