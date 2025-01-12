@@ -1,6 +1,20 @@
 #include "Shader.h"
+#include "glm/ext/vector_float3.hpp"
+#include "glm/gtc/type_ptr.hpp"
 
 Shader::Shader(){
+}
+
+void Shader::setVec3(const char* uniformName, glm::vec3& vec){
+
+    auto loc = glGetUniformLocation(this->_uid, uniformName);
+    glUniform3fv(loc, 1, glm::value_ptr(vec));
+    
+}
+
+void Shader::setVec3(const char* uniformName, glm::vec3 vec){
+    auto loc = glGetUniformLocation(this->_uid, uniformName);
+    glUniform3fv(loc, 1, glm::value_ptr(vec));
 }
 void Shader::addShader(unsigned int type, std::string filepath){
     int success;

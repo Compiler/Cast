@@ -23,8 +23,8 @@ bool LightingScene::init() {
     _shader = new Shader();
     CHECK_GL_ERROR();
     
-    _shader->addShader(GL_VERTEX_SHADER, "Resources/Shaders/lighting_object.vert");
-    _shader->addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/lighting_object.frag");
+    _shader->addShader(GL_VERTEX_SHADER, "Resources/Shaders/mat_lighting.vert");
+    _shader->addShader(GL_FRAGMENT_SHADER, "Resources/Shaders/mat_lighting.frag");
     _shader->compile();
 
 
@@ -157,6 +157,8 @@ void LightingScene::render(float delta) {
     auto lightPosLocation = glGetUniformLocation(_shader->getUID(), "u_lightPos");
     auto viewPosLocation = glGetUniformLocation(_shader->getUID(), "u_viewPos");
 
+    _shader->setVec3("u_mat.ambient", {1.0f, 0.5f, 0.31f});
+    _shader->setVec3("u_mat.ambient", {1.0f, 0.5f, 0.31f});
 
     glUniform3fv(objLocation, 1, glm::value_ptr(glm::vec3{1.0f, 0.5f, 0.31f}));
     glUniform3fv(lightLocation, 1, glm::value_ptr(glm::vec3{1, 1.0, 1.0}));

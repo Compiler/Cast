@@ -8,6 +8,16 @@ layout (location = 0) out vec4 oColor;
 
 uniform mat4 iModel, iView, iProjection;
 
+
+struct Material {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
+uniform Material u_mat;
+
 void main(){
 
     oColor = aColor;
