@@ -1,4 +1,5 @@
 #include <iostream>
+#include <ratio>
 #include <thread>
 #include <chrono>
 #include <Core.h>
@@ -7,7 +8,7 @@ int main() {
     //Error is due to opengl stuff called before its ready.
     Core engineCore{};
     if(engineCore.init() != 0) return -1;
-    float targetFPS = 250;
+    float targetFPS = 1000;
     int frequency = targetFPS;
     float frameLengths;
     float fpss;
@@ -38,9 +39,9 @@ int main() {
             fpss = 0;
         }
         // Ensure each frame contributes equal time
-        auto sleepDuration = (int)(1000 / targetFPS - frameTimeMs);
+        auto sleepDuration = (int)((1000 * 1000) / targetFPS - frameTimeMcs);
         if(sleepDuration > 0){
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleepDuration));
+            std::this_thread::sleep_for(std::chrono::microseconds(sleepDuration));
         }
     }
     std::cout << "Should close hit\n";
