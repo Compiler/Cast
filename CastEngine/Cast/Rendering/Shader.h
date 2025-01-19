@@ -22,6 +22,7 @@ class Shader{
 
         void setVec3(const char* uniformName, glm::vec3& vec);
         void setVec3(const char* uniformName, glm::vec3 vec);
+        void setFloat(const char* uniformName, float val);
 
         inline unsigned int getUID() const { return _uid; };
 

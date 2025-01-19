@@ -16,6 +16,12 @@ void Shader::setVec3(const char* uniformName, glm::vec3 vec){
     auto loc = glGetUniformLocation(this->_uid, uniformName);
     glUniform3fv(loc, 1, glm::value_ptr(vec));
 }
+
+void Shader::setFloat(const char* uniformName, float val){
+    auto loc = glGetUniformLocation(this->_uid, uniformName);
+    glUniform1f(loc, val);
+}
+
 void Shader::addShader(unsigned int type, std::string filepath){
     int success;
     unsigned int shader = glCreateShader(type);

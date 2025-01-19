@@ -158,7 +158,9 @@ void LightingScene::render(float delta) {
     auto viewPosLocation = glGetUniformLocation(_shader->getUID(), "u_viewPos");
 
     _shader->setVec3("u_mat.ambient", {1.0f, 0.5f, 0.31f});
-    _shader->setVec3("u_mat.ambient", {1.0f, 0.5f, 0.31f});
+    _shader->setVec3("u_mat.diffuse", {1.0f, 0.5f, 0.31f});
+    _shader->setVec3("u_mat.specular", {0.5, 0.5, 0.5f});
+    _shader->setFloat("u_mat.shininess", 32.0f);
 
     glUniform3fv(objLocation, 1, glm::value_ptr(glm::vec3{1.0f, 0.5f, 0.31f}));
     glUniform3fv(lightLocation, 1, glm::value_ptr(glm::vec3{1, 1.0, 1.0}));
